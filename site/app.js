@@ -1,5 +1,5 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
-import { deriveState, createPoller, secondsLeft } from "./lib/live.js";
+import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature } from "./lib/live.js";
 import { bestLineup, STARTER_SLOTS, ROSTER_SIZE } from "./lib/recommend.js";
 
 const params = new URLSearchParams(location.search);
@@ -28,11 +28,7 @@ function h(tag, attrs = {}, ...kids) {
   return el;
 }
 
-async function getJson(path) {
-  const res = await fetch(`${API}${path}`);
-  if (!res.ok) throw new Error(`${path} → HTTP ${res.status}`);
-  return res.json();
-}
+const getJson = (path) => fetchJson(`${API}${path}`);
 
 const app = {
   snapshot: null,
@@ -41,6 +37,7 @@ const app = {
   traded: [],
   users: [],
   usersAt: 0,
+  updatedAt: null,
   view: null,
   viewKey: null,
   tab: TABS.includes(localStorage.getItem("tab")) ? localStorage.getItem("tab") : "draft",
@@ -48,6 +45,7 @@ const app = {
 
 const el = {
   net: document.getElementById("net-banner"),
+  calc: document.getElementById("calc-banner"),
   status: document.getElementById("status"),
   foot: document.getElementById("foot"),
   panels: Object.fromEntries(TABS.map((t) => [t, document.getElementById(`tab-${t}`)])),
@@ -71,6 +69,9 @@ function renderStatus() {
     el.status.append(h("span", {}, "Chargement…"));
     return;
   }
+  const upd = app.updatedAt
+    ? h("span", { class: "upd" }, `mis à jour à ${new Date(app.updatedAt).toLocaleTimeString("fr-FR")}`)
+    : null;
   const secs = v.status === "drafting" && app.draft ? secondsLeft(app.draft, Date.now()) : null;
   const timer = secs != null ? h("span", { class: "timer" }, `⏱ ${secs} s`) : null;
   if (v.status === "pre_draft") {
@@ -78,6 +79,9 @@ function renderStatus() {
   } else if (v.status === "complete") {
     el.status.classList.add("done");
     el.status.append(h("span", {}, "Draft terminée"));
+  } else if (v.currentPickNo == null) {
+    el.status.classList.add("done");
+    el.status.append(h("span", {}, "Tous les picks sont faits"));
   } else if (v.isMyTurn) {
     el.status.classList.add("mine");
     el.status.append(h("span", {}, `À TOI ! · Pick ${pickLabel(v, v.currentPickNo)}`), timer);
@@ -91,10 +95,12 @@ function renderStatus() {
     }
     el.status.append(h("span", {}, `${paused}Pick ${pickLabel(v, v.currentPickNo)} · ${when}`), timer);
   }
+  if (upd) el.status.append(upd);
 }
 
 function emptyRecsMessage(v) {
   if (v.status === "complete") return "Draft terminée : plus rien à choisir.";
+  if (v.currentPickNo == null && v.status !== "pre_draft") return "Tous les picks sont faits : plus rien à choisir.";
   if (v.myRoster.length >= ROSTER_SIZE) return "Aucune recommandation : ton effectif est complet.";
   return "Aucune recommandation : aucun joueur disponible ne comble un poste vide de ton cinq.";
 }
@@ -223,11 +229,10 @@ function renderBoard(v) {
   el.panels.board.replaceChildren(h("div", { class: "board-wrap" }, h("table", { class: "board" }, h("thead", {}, head), h("tbody", {}, rows))));
 }
 
-function renderPanels() {
-  if (!app.view) return;
-  renderDraft(app.view);
-  renderTeam(app.view);
-  renderBoard(app.view);
+function renderPanels(v) {
+  renderDraft(v);
+  renderTeam(v);
+  renderBoard(v);
 }
 
 function showTab(tab) {
@@ -241,11 +246,9 @@ function showTab(tab) {
 }
 
 function recompute(now) {
-  const key = JSON.stringify([app.draft.status, app.draft.draft_order, app.draft.slot_to_roster_id, app.picks.length, app.picks.at(-1)?.player_id, app.traded, app.users]);
-  if (key === app.viewKey) return false;
-  app.viewKey = key;
-  app.view = deriveState({ snapshot: app.snapshot, draft: app.draft, picks: app.picks, tradedPicks: app.traded, users: app.users, now });
-  return true;
+  const key = JSON.stringify([app.draft.status, app.draft.draft_order, app.draft.slot_to_roster_id, pickSignature(app.picks), app.traded, app.users]);
+  if (key === app.viewKey) return null;
+  return { key, view: deriveState({ snapshot: app.snapshot, draft: app.draft, picks: app.picks, tradedPicks: app.traded, users: app.users, now }) };
 }
 
 async function fetchOnce() {
@@ -268,8 +271,20 @@ function onData({ draft, picks, traded, users }) {
     app.users = users;
     app.usersAt = Date.now();
   }
-  if (recompute(Date.now())) renderPanels();
+  app.updatedAt = Date.now();
+  const next = recompute(Date.now());
+  if (next) {
+    renderPanels(next.view);
+    app.view = next.view;
+    app.viewKey = next.key;
+  }
+  el.calc.hidden = true;
   renderStatus();
+}
+
+function onComputeError(err) {
+  console.error("Erreur de calcul:", err);
+  el.calc.hidden = false;
 }
 
 function onError(err) {
@@ -281,18 +296,16 @@ async function main() {
   for (const b of el.tabs) b.addEventListener("click", () => showTab(b.dataset.tab));
   showTab(app.tab);
   renderStatus();
-  const res = await fetch("data/snapshot.json");
-  if (!res.ok) throw new Error(`snapshot.json → HTTP ${res.status}`);
-  app.snapshot = await res.json();
+  app.snapshot = await fetchJson("data/snapshot.json");
   el.foot.textContent = `Données du ${new Date(app.snapshot.generatedAt).toLocaleString("fr-FR")} · API ${API}`;
   setInterval(() => {
     if (app.view) renderStatus();
   }, 1000);
-  createPoller({ fetchOnce, onData, onError, delayMs: POLL_MS }).start();
+  createPoller({ fetchOnce, onData, onError, onComputeError, delayMs: POLL_MS }).start();
 }
 
 main().catch((err) => {
   console.error(err);
   el.status.className = "status";
-  el.status.textContent = `Erreur de chargement : ${err.message}`;
+  el.status.textContent = `Erreur de chargement : ${err.message} — recharge la page.`;
 });

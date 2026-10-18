@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deriveState, createPoller } from "../site/lib/live.js";
+import { deriveState, createPoller, fetchJson, pickSignature } from "../site/lib/live.js";
 import { slotForPick } from "../site/lib/draftOrder.js";
 import { MY_USER_ID } from "../site/lib/config.js";
 
@@ -120,4 +120,52 @@ test("poller : échec signalé, état gardé, reprise automatique, jamais de che
   await timers.shift().fn();
   assert.deepEqual(events, ["data1", "error:réseau", "data3"]);
   assert.equal(maxInFlight, 1);
+});
+
+test("fetchJson : un appel qui ne répond jamais est abandonné après le délai", async () => {
+  const hang = (url, { signal }) => new Promise((_, reject) => signal.addEventListener("abort", () => reject(signal.reason)));
+  const t0 = Date.now();
+  await assert.rejects(fetchJson("http://x/y", { fetchFn: hang, timeoutMs: 50 }));
+  assert.ok(Date.now() - t0 < 1000);
+});
+test("fetchJson : HTTP 5xx → erreur", async () => {
+  const bad = async () => ({ ok: false, status: 503, json: async () => ({}) });
+  await assert.rejects(fetchJson("http://x/y", { fetchFn: bad, timeoutMs: 50 }), /HTTP 503/);
+});
+test("poller : un fetchOnce qui ne se résout jamais → onError après le délai, puis nouvel essai planifié", async () => {
+  const events = [];
+  const timers = [];
+  const poller = createPoller({
+    fetchOnce: () => new Promise(() => {}),
+    onData: () => events.push("data"),
+    onError: (e) => events.push("error:" + e.message),
+    delayMs: 2500, timeoutMs: 30,
+    setTimer: (fn, ms) => { timers.push({ fn, ms }); return timers.length; },
+    clearTimer: () => {},
+  });
+  await poller.start();
+  assert.equal(events.length, 1); assert.match(events[0], /^error:/);
+  assert.equal(timers.length, 1);
+});
+test("poller : une exception dans onData → onComputeError, la boucle continue", async () => {
+  const events = [];
+  const timers = [];
+  const poller = createPoller({
+    fetchOnce: async () => 1,
+    onData: () => { throw new Error("boum"); },
+    onError: () => events.push("net"),
+    onComputeError: (e) => events.push("calc:" + e.message),
+    delayMs: 2500,
+    setTimer: (fn, ms) => { timers.push({ fn, ms }); return timers.length; },
+    clearTimer: () => {},
+  });
+  await poller.start();
+  assert.deepEqual(events, ["calc:boum"]);
+  assert.equal(timers.length, 1);
+});
+test("pickSignature change quand un pick est corrigé à nombre de picks égal", () => {
+  const a = [{ pick_no: 1, player_id: "p1", roster_id: 1 }, { pick_no: 2, player_id: "p2", roster_id: 2 }];
+  const b = [{ pick_no: 1, player_id: "p1", roster_id: 1 }, { pick_no: 2, player_id: "p9", roster_id: 2 }];
+  assert.notEqual(pickSignature(a), pickSignature(b));
+  assert.equal(pickSignature(a), pickSignature(a.map((p) => ({ ...p, metadata: {} }))));
 });
