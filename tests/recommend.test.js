@@ -57,3 +57,31 @@ test("remaniement : un meneur pur comble le poste SG via un polyvalent", () => {
   assert.equal(recs[0].player.id, "pg");
   assert.equal(recs[0].fillsSlot, "SG");
 });
+test("explication : un PF/SF qui pousse un titulaire vers C", () => {
+  const roster = [P("s", ["SF"], 600), P("a", ["PF", "C"], 500)];
+  const [rec] = recommend({
+    available: [P("p", ["PF", "SF"], 400)], roster, picksLeft: 5, currentPickNo: 50, myNextPickNo: null,
+  });
+  assert.equal(rec.fillsSlot, "C");
+  assert.equal(rec.ownSlot, "PF");
+  assert.equal(rec.shiftedPlayer.id, "a");
+  assert.ok(rec.reason.endsWith("complète ton cinq : il joue PF, a passe C"), rec.reason);
+});
+test("explication : un vrai pivot comble le poste C", () => {
+  const roster = [P("s", ["SF"], 600), P("a", ["PF", "C"], 500)];
+  const [rec] = recommend({
+    available: [P("c", ["C"], 400)], roster, picksLeft: 5, currentPickNo: 50, myNextPickNo: null,
+  });
+  assert.equal(rec.fillsSlot, "C");
+  assert.equal(rec.ownSlot, "C");
+  assert.equal(rec.shiftedPlayer, null);
+  assert.ok(rec.reason.endsWith(", comble ton poste C"), rec.reason);
+});
+test("explication : ownSlot absent et joueur non éligible au poste", () => {
+  const p = P("p", ["PF"], 10, { name: "Cooper Flagg" });
+  const shifted = P("a", ["PF", "C"], 10, { name: "Cooper Flagg" });
+  assert.equal(
+    explain({ fillsSlot: "C", ownSlot: null, shiftedPlayer: shifted, lineupGain: 5 }, p),
+    "0 pts/match, complète ton cinq (Flagg passe C)",
+  );
+});
