@@ -77,6 +77,12 @@ test("explication : un vrai pivot comble le poste C", () => {
   assert.equal(rec.shiftedPlayer, null);
   assert.ok(rec.reason.endsWith(", comble ton poste C"), rec.reason);
 });
+test("explication : le nom court ignore le suffixe Jr.", () => {
+  const p = P("p", ["PF"], 10);
+  const shifted = P("m", ["PF", "C"], 10, { name: "Michael Porter Jr." });
+  const reason = explain({ fillsSlot: "C", ownSlot: "PF", shiftedPlayer: shifted, lineupGain: 5 }, p);
+  assert.ok(reason.includes("Porter passe"), reason);
+});
 test("explication : ownSlot absent et joueur non éligible au poste", () => {
   const p = P("p", ["PF"], 10, { name: "Cooper Flagg" });
   const shifted = P("a", ["PF", "C"], 10, { name: "Cooper Flagg" });

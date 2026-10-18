@@ -63,7 +63,11 @@ export function availabilityTier(adp, currentPickNo, myNextPickNo) {
 export function explain(rec, player) {
   const fpg = player.fpg.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
   const stats = player.statsLine ? ` · ${player.statsLine}` : "";
-  const shortName = (p) => p.name.trim().split(/\s+/).pop();
+  const shortName = (p) => {
+    const words = p.name.trim().split(/\s+/);
+    while (words.length > 1 && /^(Jr\.?|Sr\.?|II|III|IV|V)$/i.test(words.at(-1))) words.pop();
+    return words.at(-1);
+  };
   const ownSlot = rec.ownSlot === undefined && player.positions.includes(rec.fillsSlot) ? rec.fillsSlot : rec.ownSlot;
   let tail = ", profondeur de banc";
   if (rec.fillsSlot && ownSlot === rec.fillsSlot) tail = `, comble ton poste ${rec.fillsSlot}`;
