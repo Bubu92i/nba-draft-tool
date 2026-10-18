@@ -73,6 +73,7 @@ if (mode === "replay2025") {
   };
 }
 
+const startTimeMs = Date.now() + startDelayMs;
 const state = { status: "pre_draft", picks: [], lastPicked: null };
 
 function nextScenarioPick() {
@@ -137,6 +138,7 @@ function currentDraft() {
   return {
     ...baseDraft,
     status: state.status,
+    start_time: startTimeMs,
     draft_order: preDraft ? null : draftOrder,
     last_picked: preDraft ? null : state.lastPicked,
   };

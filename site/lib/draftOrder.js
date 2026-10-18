@@ -30,3 +30,11 @@ export function nextMyPick(myPicks, currentPickNo, includeCurrent) {
   const next = myPicks.find((p) => (includeCurrent ? p >= currentPickNo : p > currentPickNo));
   return next ?? null;
 }
+
+export function pickLabel(pickNo, teams) {
+  return `Tour ${Math.ceil(pickNo / teams)} · choix ${((pickNo - 1) % teams) + 1}`;
+}
+
+export function pickShort(pickNo, teams) {
+  return `T${Math.ceil(pickNo / teams)} · #${pickNo}`;
+}

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { slotForPick, pickOwnerRosterId, myPickNumbers, orderKnown, nextMyPick } from "../site/lib/draftOrder.js";
+import { slotForPick, pickOwnerRosterId, myPickNumbers, orderKnown, nextMyPick, pickLabel, pickShort } from "../site/lib/draftOrder.js";
 import { loadFixture } from "./helpers.js";
 
 const ctx = (s2r = Object.fromEntries([...Array(12)].map((_, i) => [String(i + 1), i + 1])), traded = []) =>
@@ -41,4 +41,16 @@ test("prochain pick à moi", () => {
   assert.equal(nextMyPick(mine, 7, true), 7);
   assert.equal(nextMyPick(mine, 7, false), 18);
   assert.equal(nextMyPick(mine, 31, true), null);
+});
+
+test("B4 pickLabel : « Tour 8 · choix 7 », jamais « 8.07 »", () => {
+  assert.equal(pickLabel(91, 12), "Tour 8 · choix 7");
+  assert.equal(pickLabel(1, 12), "Tour 1 · choix 1");
+  assert.equal(pickLabel(36, 12), "Tour 3 · choix 12");
+  assert.equal(pickLabel(54, 12), "Tour 5 · choix 6");
+  assert.equal(pickLabel(120, 12), "Tour 10 · choix 12");
+});
+test("B4 pickShort : « T5 · #54 »", () => {
+  assert.equal(pickShort(54, 12), "T5 · #54");
+  assert.equal(pickShort(7, 12), "T1 · #7");
 });

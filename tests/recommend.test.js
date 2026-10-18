@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine } from "../site/lib/recommend.js";
+import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, compareFives, comparisonLine } from "../site/lib/recommend.js";
 
 const P = (id, positions, value, extra = {}) => ({
   id, name: id, team: "XXX", positions, value, fpg: 0, expectedGames: 70, adp: 999,
@@ -158,4 +158,57 @@ test("postes manquants : rouge seulement si draft finie ou plus assez de picks, 
 test("explication : toujours une décimale", () => {
   const p = P("c1", ["C"], 1000, { fpg: 52, statsLine: null });
   assert.equal(explain({ fillsSlot: "C", lineupGain: 1 }, p), "52,0 pts fantasy/match, comble ton poste C");
+});
+
+test("B1 gapLine : écart avec le n°2, arrondi", () => {
+  const recs = [{ score: 1500.4 }, { score: 1380 }];
+  assert.equal(gapLine(recs), "+120 pts d'apport de plus que le n°2");
+  assert.equal(gapLine([{ score: 2450 }, { score: 1000 }]), "+1\u202f450 pts d'apport de plus que le n°2");
+});
+test("B1 gapLine : choix serré sous 50 pts, absent avec une seule carte", () => {
+  assert.equal(gapLine([{ score: 1000 }, { score: 960 }]), "Choix serré avec le n°2 (écart 40 pts)");
+  assert.equal(gapLine([{ score: 1000 }, { score: 1000 }]), "Choix serré avec le n°2 (écart 0 pts)");
+  assert.equal(gapLine([{ score: 1049.4 }, { score: 1000 }]), "Choix serré avec le n°2 (écart 49 pts)");
+  assert.equal(gapLine([{ score: 1050 }, { score: 1000 }]), "+50 pts d'apport de plus que le n°2");
+  assert.equal(gapLine([{ score: 1000 }]), null);
+  assert.equal(gapLine([]), null);
+});
+test("B3 signedPts et cardMarker", () => {
+  assert.equal(signedPts(1349.6), "+1\u202f350");
+  assert.equal(signedPts(12.2), "+12");
+  assert.equal(signedPts(0.2), "0");
+  assert.equal(signedPts(-12.4), "\u221212");
+  assert.deepEqual([0, 1, 2, 3].map(cardMarker), ["①", "②", "③", "④"]);
+  assert.equal(cardMarker(4), "");
+  assert.equal(cardMarker(-1), "");
+});
+test("B6 seasonPts : fpg × matchs prévus arrondi", () => {
+  assert.equal(seasonPts({ fpg: 48.04, expectedGames: 60 }), 2882);
+});
+const F = (id, positions, fpg, games = 50) => ({ id, name: id, positions, value: fpg * games, fpg, expectedGames: games });
+const fiveOf = (fpg) => [F("pg", ["PG"], fpg), F("sg", ["SG"], fpg), F("sf", ["SF"], fpg), F("pf", ["PF"], fpg), F("c", ["C"], fpg)];
+test("B6 compareFives : totaux du meilleur cinq, rang, moyenne", () => {
+  const rosters = { 1: fiveOf(40), 2: fiveOf(30), 7: fiveOf(20), 4: fiveOf(10) };
+  const c = compareFives({ rosters, myRosterId: 2, teams: 4 });
+  assert.deepEqual(c, { mine: 7500, rank: 2, teams: 4, average: (10000 + 7500 + 5000 + 2500) / 4 });
+});
+test("B6 compareFives : le banc ne compte pas, joueur sans stats = 0, équipes vides comptées", () => {
+  const mine = [...fiveOf(20), F("bench", ["PG"], 5)];
+  mine[0] = F("pg", ["PG"], 50);
+  const rosters = { 3: mine, 5: [F("inconnu", ["PG"], 0, 0)] };
+  const c = compareFives({ rosters, myRosterId: 3, teams: 12 });
+  assert.equal(c.mine, 2500 + 3 * 1000 + 1000);
+  assert.equal(c.rank, 1);
+  assert.equal(c.teams, 12);
+  assert.equal(c.average, c.mine / 12);
+});
+test("B6 compareFives : égalité = même rang, équipe vide → rang dernier", () => {
+  const rosters = { 1: fiveOf(10), 2: fiveOf(10) };
+  assert.equal(compareFives({ rosters, myRosterId: 2, teams: 3 }).rank, 1);
+  assert.equal(compareFives({ rosters: { 1: fiveOf(10), 2: [] }, myRosterId: 2, teams: 2 }).rank, 2);
+  assert.equal(compareFives({ rosters: { 1: fiveOf(10) }, myRosterId: 2, teams: 2 }).mine, 0);
+});
+test("B6 comparisonLine : format, 1re / 2e", () => {
+  assert.equal(comparisonLine({ mine: 11121, rank: 3, teams: 12, average: 10400.4 }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400)");
+  assert.equal(comparisonLine({ mine: 500, rank: 1, teams: 12, average: 400 }), "Ton cinq : ≈ 500 pts fantasy — 1re sur 12 équipes (moyenne ≈ 400)");
 });

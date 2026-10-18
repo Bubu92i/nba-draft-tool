@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal, timerUrgent, dataAge } from "../site/lib/live.js";
+import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal, timerUrgent, dataAge, formatStartTime, preDraftText } from "../site/lib/live.js";
 import { slotForPick } from "../site/lib/draftOrder.js";
 import { MY_USER_ID } from "../site/lib/config.js";
 
@@ -224,4 +224,30 @@ test("âge des données : « il y a N s », orange au-delà de 15 s", () => {
   assert.deepEqual(dataAge(0, 16000), { text: "il y a 16 s", stale: true });
   assert.deepEqual(dataAge(5000, 1000), { text: "il y a 0 s", stale: false });
   assert.equal(dataAge(null, 1000), null);
+});
+
+test("B7 formatStartTime : « lundi 21:00 » en heure locale", () => {
+  assert.equal(formatStartTime(new Date(2026, 9, 19, 21, 0).getTime()), "lundi 21:00");
+  assert.equal(formatStartTime(new Date(2026, 9, 24, 9, 5).getTime()), "samedi 09:05");
+  assert.equal(formatStartTime(null), null);
+  assert.equal(formatStartTime(undefined), null);
+  assert.equal(formatStartTime(0), null);
+  assert.equal(formatStartTime("abc"), null);
+});
+test("B7 preDraftText : avec ou sans start_time", () => {
+  const ms = new Date(2026, 9, 19, 21, 0).getTime();
+  assert.equal(preDraftText({ start_time: ms }), "En attente du début de la draft — prévu lundi 21:00");
+  assert.equal(preDraftText({}), "En attente du début de la draft");
+  assert.equal(preDraftText({ start_time: null }), "En attente du début de la draft");
+  assert.equal(preDraftText(null), "En attente du début de la draft");
+});
+test("B6 deriveState : fiveComparison (mon cinq vs les 12 équipes)", () => {
+  const pre = deriveState({ snapshot, draft: { status: "pre_draft", draft_order: null, settings, slot_to_roster_id: identity }, picks: [], tradedPicks: [], users, now });
+  assert.equal(pre.fiveComparison.mine, 0);
+  assert.equal(pre.fiveComparison.teams, 12);
+  const v = deriveState({ snapshot, draft: drafting, picks: fakePicks(7), tradedPicks: [], users, now });
+  assert.equal(v.fiveComparison.teams, 12);
+  assert.ok(v.fiveComparison.mine > 0);
+  assert.ok(v.fiveComparison.rank >= 1 && v.fiveComparison.rank <= 12);
+  assert.ok(v.fiveComparison.average > 0 && v.fiveComparison.average < v.fiveComparison.mine * 12);
 });

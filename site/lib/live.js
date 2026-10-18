@@ -1,5 +1,5 @@
 import { slotForPick, pickOwnerRosterId, myPickNumbers, nextMyPick, orderKnown } from "./draftOrder.js";
-import { recommend } from "./recommend.js";
+import { recommend, compareFives } from "./recommend.js";
 import { MY_ROSTER_ID } from "./config.js";
 
 const TOP_AVAILABLE = 50;
@@ -34,6 +34,18 @@ export function dataAge(updatedAt, now) {
   return { text: `il y a ${secs} s`, stale: secs > STALE_AFTER_S };
 }
 
+export function formatStartTime(ms) {
+  if (typeof ms !== "number" || !Number.isFinite(ms) || ms <= 0) return null;
+  const parts = new Intl.DateTimeFormat("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(ms));
+  const get = (type) => parts.find((p) => p.type === type)?.value;
+  return `${get("weekday")} ${get("hour")}:${get("minute")}`;
+}
+
+export function preDraftText(draft) {
+  const when = formatStartTime(draft?.start_time);
+  return when ? `En attente du début de la draft — prévu ${when}` : "En attente du début de la draft";
+}
+
 function columnLabels(draft, users, teams) {
   const nameByUser = new Map((users ?? []).map((u) => [String(u.user_id), u.display_name]));
   const bySlot = new Map();
@@ -66,6 +78,7 @@ export function deriveState({ snapshot, draft, picks, tradedPicks, users, now })
     byId.set(pick.pick_no, pick);
   }
   const myRoster = rosters.get(myRosterId) ?? [];
+  const fiveComparison = compareFives({ rosters: Object.fromEntries(rosters), myRosterId, teams });
   const available = Object.values(snapshot.players)
     .filter((p) => !pickedIds.has(String(p.id)))
     .sort((a, b) => b.value - a.value);
@@ -126,6 +139,7 @@ export function deriveState({ snapshot, draft, picks, tradedPicks, users, now })
     picksLeft,
     secondsLeft: secondsLeft(draft, now),
     myRoster,
+    fiveComparison,
     available,
     recommendations,
     topAvailable: available.slice(0, TOP_AVAILABLE),
