@@ -8,6 +8,7 @@ if [ -n "$(git status --porcelain -- site)" ]; then
   exit 1
 fi
 
+trap 'git branch -D gh-pages-tmp >/dev/null 2>&1 || true' EXIT
 git branch -D gh-pages-tmp >/dev/null 2>&1 || true
 git subtree split --prefix site -b gh-pages-tmp
 git push -f origin gh-pages-tmp:gh-pages

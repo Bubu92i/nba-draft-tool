@@ -23,6 +23,11 @@ python3 -m http.server 8080 -d site
 
 ## Check-list jour J
 
-1. Lundi vers 18h : `npm run build` (blessures fraîches) → `npm test` → `scripts/deploy.sh`
-2. 20h45 : ouvrir l'URL sur la tablette, écran allumé en permanence
+1. Lundi vers 18h :
+   - `npm run build` (blessures fraîches). Si ça échoue (réseau), garder le snapshot actuel, déjà en ligne, et passer à la suite.
+   - `npm test`
+   - `git add site data && git commit -m "data: refresh snapshot" && git push`
+   - `scripts/deploy.sh` (Pages peut prendre ~1 min)
+   - vérifier : `curl -s https://bubu92i.github.io/nba-draft-tool/data/snapshot.json | head -c 120` affiche le nouveau `generatedAt`
+2. 20h45 : ouvrir l'URL sur la tablette, écran allumé en permanence. Recharger la page sur la tablette et vérifier l'heure « mis à jour à … ».
 3. Si l'outil plante : `top50.html`
