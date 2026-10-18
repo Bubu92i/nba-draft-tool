@@ -1,16 +1,11 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
-import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature } from "./lib/live.js";
-import { bestLineup, STARTER_SLOTS, ROSTER_SIZE } from "./lib/recommend.js";
+import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge } from "./lib/live.js";
+import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS } from "./lib/recommend.js";
 
 const params = new URLSearchParams(location.search);
 const API = (params.get("api") ?? DEFAULT_API).replace(/\/+$/, "");
 const DRAFT = params.get("draft") ?? DRAFT_ID;
 const TABS = ["draft", "team", "board"];
-const TIER_BADGE = {
-  gone: ["gone", "⏳ Partira avant ton tour"],
-  coinflip: ["coinflip", "⚖️ 50-50"],
-  wait: ["wait", "✅ Peut attendre"],
-};
 const fmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
 const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
 
@@ -44,6 +39,7 @@ const app = {
 };
 
 const el = {
+  main: document.querySelector("main"),
   net: document.getElementById("net-banner"),
   calc: document.getElementById("calc-banner"),
   status: document.getElementById("status"),
@@ -69,22 +65,22 @@ function renderStatus() {
     el.status.append(h("span", {}, "Chargement…"));
     return;
   }
-  const upd = app.updatedAt
-    ? h("span", { class: "upd" }, `mis à jour à ${new Date(app.updatedAt).toLocaleTimeString("fr-FR")}`)
-    : null;
+  const age = dataAge(app.updatedAt, Date.now());
+  const upd = age ? h("span", { class: age.stale ? "upd stale" : "upd" }, age.text) : null;
   const secs = v.status === "drafting" && app.draft ? secondsLeft(app.draft, Date.now()) : null;
-  const timer = secs != null ? h("span", { class: "timer" }, `⏱ ${secs} s`) : null;
+  const timer = secs != null ? h("span", { class: timerUrgent(secs) ? "timer urgent" : "timer" }, `⏱ ${secs} s`) : null;
+  const right = h("span", { class: "right" }, timer, upd);
   if (v.status === "pre_draft") {
-    el.status.append(h("span", {}, "En attente du début de la draft"));
+    el.status.append(h("span", {}, "En attente du début de la draft"), right);
   } else if (v.status === "complete") {
     el.status.classList.add("done");
-    el.status.append(h("span", {}, "Draft terminée"));
+    el.status.append(h("span", {}, "Draft terminée"), right);
   } else if (v.currentPickNo == null) {
     el.status.classList.add("done");
-    el.status.append(h("span", {}, "Tous les picks sont faits"));
+    el.status.append(h("span", {}, "Tous les picks sont faits"), right);
   } else if (v.isMyTurn) {
     el.status.classList.add("mine");
-    el.status.append(h("span", {}, `À TOI ! · Pick ${pickLabel(v, v.currentPickNo)}`), timer);
+    el.status.append(h("span", {}, `À TOI ! · Pick ${pickLabel(v, v.currentPickNo)}`), right);
   } else {
     const paused = v.status === "paused" ? "Draft en pause · " : "";
     let when = "ordre de draft pas encore connu";
@@ -93,9 +89,8 @@ function renderStatus() {
       else if (v.picksUntilMe === 1) when = "à toi au prochain pick";
       else when = `à toi dans ${v.picksUntilMe} picks`;
     }
-    el.status.append(h("span", {}, `${paused}Pick ${pickLabel(v, v.currentPickNo)} · ${when}`), timer);
+    el.status.append(h("span", {}, `${paused}Pick ${pickLabel(v, v.currentPickNo)} · ${when}`), right);
   }
-  if (upd) el.status.append(upd);
 }
 
 function emptyRecsMessage(v) {
@@ -105,17 +100,19 @@ function emptyRecsMessage(v) {
   return "Aucune recommandation : aucun joueur disponible ne comble un poste vide de ton cinq.";
 }
 
-function recCard(r) {
+const injClass = (p) => `inj ${p.injuryLevel === "high" ? "high" : "moderate"}`;
+
+function recCard(r, i) {
   const p = r.player;
   const badges = [];
-  if (r.tier) badges.push(h("span", { class: `badge ${TIER_BADGE[r.tier][0]}` }, TIER_BADGE[r.tier][1]));
-  if (p.injuryBadge) badges.push(h("span", { class: "badge inj" }, `🩹 ${p.injuryBadge}`));
+  if (r.tier) badges.push(h("span", { class: `badge ${r.tier}` }, TIER_LABELS[r.tier]));
+  if (p.injuryBadge) badges.push(h("span", { class: `badge ${injClass(p)}` }, `🩹 ${p.injuryBadge}`));
   return h(
     "article",
-    { class: "rec" },
-    h("div", { class: "name" }, p.name),
-    h("div", { class: "meta" }, posBadges(p.positions), p.team),
-    h("div", { class: "pts" }, `≈ ${fmt0.format(seasonPts(p))} pts sur la saison`),
+    { class: i === 0 ? "rec best" : "rec" },
+    i === 0 ? h("div", { class: "best-banner" }, "👉 MEILLEUR CHOIX") : null,
+    h("div", { class: "head" }, h("span", { class: "rank" }, i + 1), h("div", { class: "id" }, h("div", { class: "name" }, p.name), h("div", { class: "meta" }, posBadges(p.positions), p.team))),
+    h("div", { class: "pts" }, `≈ ${fmt0.format(seasonPts(p))} pts fantasy sur la saison`, h("span", { class: "games" }, ` (≈ ${fmt0.format(p.expectedGames)} matchs)`)),
     h("div", { class: "why" }, r.reason),
     badges.length ? h("div", { class: "badges" }, badges) : null,
   );
@@ -130,7 +127,7 @@ function renderDraft(v) {
       "tr",
       {},
       h("td", { class: "n" }, i + 1),
-      h("td", {}, h("b", {}, p.name), p.injuryBadge ? h("div", { class: "inj" }, `🩹 ${p.injuryBadge}`) : null),
+      h("td", {}, h("b", {}, p.name), p.injuryBadge ? h("div", { class: injClass(p) }, `🩹 ${p.injuryBadge}`) : null),
       h("td", { class: "pos-cell" }, posBadges(p.positions)),
       h("td", {}, p.team),
       h("td", { class: "n" }, fmt.format(p.fpg)),
@@ -138,55 +135,42 @@ function renderDraft(v) {
   );
   el.panels.draft.replaceChildren(
     h("h2", {}, "Recommandations"),
+    h("p", { class: "caption" }, "Classés selon ce que chaque joueur ajoute à ton cinq de départ (points fantasy × matchs prévus, poste à combler), puis la profondeur de banc."),
     recs,
     h("h2", {}, `Meilleurs joueurs disponibles (${v.topAvailable.length})`),
     h(
       "table",
       { class: "list" },
-      h("thead", {}, h("tr", {}, h("th", { class: "n" }, "#"), h("th", {}, "Joueur"), h("th", {}, "Postes"), h("th", {}, "Éq."), h("th", { class: "n" }, "Pts/match"))),
+      h("thead", {}, h("tr", {}, h("th", { class: "n" }, "#"), h("th", {}, "Joueur"), h("th", {}, "Postes"), h("th", {}, "Éq."), h("th", { class: "n" }, "Pts fantasy/match"))),
       h("tbody", {}, rows),
     ),
   );
 }
 
+function playerSlot(label, p) {
+  return h(
+    "div",
+    { class: "slot" },
+    h("span", { class: "lbl" }, label),
+    h("span", { class: "who" }, p.name, h("div", { class: "sub" }, `${p.positions.join("/")} · ${p.team}`)),
+    h("span", { class: "pts" }, `${fmt0.format(seasonPts(p))} pts`),
+  );
+}
+const emptySlot = (label) => h("div", { class: "slot vide" }, h("span", { class: "lbl" }, label), h("span", { class: "who" }, "vide"));
+
 function renderTeam(v) {
-  const L = bestLineup(v.myRoster);
-  const byId = new Map(v.myRoster.map((p) => [p.id, p]));
-  const starterIds = new Set();
-  let starterTotal = 0;
-  const slots = STARTER_SLOTS.map((slot) => {
-    const p = byId.get(L.assignment[slot]);
-    if (!p) {
-      return h("div", { class: "slot vide" }, h("span", { class: "lbl" }, slot), h("span", { class: "who" }, "vide"));
-    }
-    starterIds.add(p.id);
-    starterTotal += seasonPts(p);
-    return h(
-      "div",
-      { class: "slot" },
-      h("span", { class: "lbl" }, slot),
-      h("span", { class: "who" }, p.name, h("div", { class: "sub" }, `${p.positions.join("/")} · ${p.team}`)),
-      h("span", { class: "pts" }, `${fmt0.format(seasonPts(p))} pts`),
-    );
-  });
-  const bench = v.myRoster.filter((p) => !starterIds.has(p.id));
-  const benchSlots = Array.from({ length: ROSTER_SIZE - STARTER_SLOTS.length }, (_, i) => {
-    const p = bench[i];
-    if (!p) return h("div", { class: "slot vide" }, h("span", { class: "lbl" }, "BN"), h("span", { class: "who" }, "vide"));
-    return h(
-      "div",
-      { class: "slot" },
-      h("span", { class: "lbl" }, "BN"),
-      h("span", { class: "who" }, p.name, h("div", { class: "sub" }, `${p.positions.join("/")} · ${p.team}`)),
-      h("span", { class: "pts" }, `${fmt0.format(seasonPts(p))} pts`),
-    );
-  });
+  const { starters, bench, emptySlots } = lineupView(v.myRoster);
+  const starterTotal = starters.reduce((sum, s) => sum + (s.player ? seasonPts(s.player) : 0), 0);
+  const benchRows = Array.from({ length: Math.max(ROSTER_SIZE - STARTER_SLOTS.length, bench.length) }, (_, i) =>
+    bench[i] ? playerSlot("BN", bench[i]) : emptySlot("BN"),
+  );
   el.panels.team.replaceChildren(
+    emptySlots.length ? h("div", { class: "alert" }, `Il te manque : ${emptySlots.join(" · ")}`) : null,
     h("h2", {}, "Cinq majeur"),
-    h("div", { class: "lineup" }, slots),
+    h("div", { class: "lineup" }, starters.map((s) => (s.player ? playerSlot(s.slot, s.player) : emptySlot(s.slot)))),
     h("div", { class: "total" }, `Total attendu (cinq majeur) : ${fmt0.format(starterTotal)} pts sur la saison`),
-    h("h2", {}, `Banc (${bench.length}/${ROSTER_SIZE - STARTER_SLOTS.length})`),
-    h("div", { class: "lineup" }, benchSlots),
+    h("h2", {}, `Banc (${bench.length})`),
+    h("div", { class: "lineup" }, benchRows),
   );
 }
 
@@ -262,8 +246,13 @@ async function fetchOnce() {
   return { draft, picks, traded, users };
 }
 
+function setOffline(offline) {
+  el.net.hidden = !offline;
+  el.main.classList.toggle("stale", offline);
+}
+
 function onData({ draft, picks, traded, users }) {
-  el.net.hidden = true;
+  setOffline(false);
   app.draft = draft;
   app.picks = picks;
   app.traded = traded;
@@ -289,7 +278,7 @@ function onComputeError(err) {
 
 function onError(err) {
   console.error("Sleeper API:", err);
-  el.net.hidden = false;
+  setOffline(true);
 }
 
 async function main() {

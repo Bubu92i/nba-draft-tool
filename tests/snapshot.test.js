@@ -35,3 +35,19 @@ test("statsLine absente pour les valeurs par défaut", { skip: missing && "snaps
   const s = loadSnapshot();
   for (const p of Object.values(s.players)) assert.equal(p.statsLine === null, p.fpgSource === "default", p.name);
 });
+
+test("niveaux de blessure cohérents avec le badge (A5)", { skip: missing && "snapshot absent" }, () => {
+  const s = loadSnapshot();
+  for (const p of Object.values(s.players)) {
+    assert.equal(p.injuryLevel === null, p.injuryBadge === null, p.name);
+    if (p.injuryBadge) {
+      assert.ok(p.injuryBadge.startsWith(p.injuryLevel === "high" ? "Risque élevé" : "Risque modéré"), p.name);
+      assert.ok(!/\b(Out|DTD|IR)\b/.test(p.injuryBadge), p.name);
+    }
+    if (p.injury.status === "Out") assert.equal(p.injuryLevel, "high", p.name);
+  }
+});
+test("statsLine en mots complets", { skip: missing && "snapshot absent" }, () => {
+  const s = loadSnapshot();
+  for (const p of Object.values(s.players)) if (p.statsLine) assert.match(p.statsLine, /^[\d,]+ points · [\d,]+ rebonds · [\d,]+ passes/, p.name);
+});

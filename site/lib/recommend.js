@@ -36,6 +36,24 @@ export function bestLineup(players) {
   return { total: result.total, assignment };
 }
 
+export function lineupView(roster) {
+  const { assignment } = bestLineup(roster);
+  const byId = new Map(roster.map((p) => [p.id, p]));
+  const starters = STARTER_SLOTS.map((slot) => ({ slot, player: byId.get(assignment[slot]) ?? null }));
+  const starterIds = new Set(starters.filter((s) => s.player).map((s) => s.player.id));
+  return {
+    starters,
+    emptySlots: starters.filter((s) => !s.player).map((s) => s.slot),
+    bench: roster.filter((p) => !starterIds.has(p.id)),
+  };
+}
+
+export const TIER_LABELS = {
+  gone: "⏳ Pas dispo à ton prochain tour",
+  coinflip: "⚖️ Peut-être encore là à ton prochain tour",
+  wait: "✅ Sera sûrement encore là à ton prochain tour",
+};
+
 export function canDraft(candidate, roster) {
   if (roster.length >= ROSTER_SIZE) return false;
   return candidate.positions.some(
@@ -62,7 +80,7 @@ export function availabilityTier(adp, currentPickNo, myNextPickNo) {
 
 export function explain(rec, player) {
   const fpg = player.fpg.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
-  const stats = player.statsLine ? ` · ${player.statsLine}` : "";
+  const stats = player.statsLine ? ` — ${player.statsLine}` : "";
   const shortName = (p) => {
     const words = p.name.trim().split(/\s+/);
     while (words.length > 1 && /^(Jr\.?|Sr\.?|II|III|IV|V)$/i.test(words[words.length - 1])) words.pop();
@@ -77,7 +95,7 @@ export function explain(rec, player) {
       ? `, complète ton cinq : il joue ${ownSlot}, ${name} passe ${rec.fillsSlot}`
       : `, complète ton cinq (${name} passe ${rec.fillsSlot})`;
   } else if (rec.lineupGain > 0) tail = ", renforce ton cinq";
-  return `${fpg} pts/match${stats}${tail}`;
+  return `${fpg} pts fantasy/match${stats}${tail}`;
 }
 
 export function recommend({ available, roster, picksLeft, currentPickNo, myNextPickNo, limit = 4 }) {

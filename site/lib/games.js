@@ -23,13 +23,32 @@ export function expectedGames({ gpHistory, yearsExp, injuryStatus, override }) {
   return Math.round(clamped * 10) / 10;
 }
 
-export function injuryBadge({ gpHistory, injuryText, override }) {
-  const parts = [];
-  if (injuryText) parts.push(injuryText);
-  if (override?.note) parts.push(override.note);
-  const seasons = SEASONS.map((s) => (gpHistory ?? []).find((h) => h.season === s)).filter(Boolean);
-  if (seasons.some((h) => h.gp < 55)) {
-    parts.push(`a joué ${seasons.map((h) => h.gp).join(", ")} matchs sur ${seasons.length} saisons`);
-  }
-  return parts.length ? parts.join(" · ") : null;
+const HIGH_RISK_GP = 50;
+const LOW_SEASON_GP = 55;
+
+function recentSeasons(gpHistory) {
+  return SEASONS.map((s) => (gpHistory ?? []).find((h) => h.season === s)).filter(Boolean);
+}
+
+function historyPart(seasons) {
+  if (!seasons.some((h) => h.gp < LOW_SEASON_GP)) return null;
+  const [last, ...before] = seasons;
+  const when = last.season === SEASONS[0] ? "l'an dernier" : `en ${last.season}`;
+  const text = `${last.gp} ${last.gp < 2 ? "match" : "matchs"} ${when}`;
+  return before.length ? `${text} (${before.map((h) => h.gp).join(", ")} avant)` : text;
+}
+
+export function injuryLevel({ gpHistory, injuryText, injuryStatus, override }) {
+  const seasons = recentSeasons(gpHistory);
+  if (!injuryText && !override?.note && !historyPart(seasons)) return null;
+  if (injuryStatus === "Out" || (seasons.length && seasons[0].gp < HIGH_RISK_GP)) return "high";
+  return "moderate";
+}
+
+export function injuryBadge({ gpHistory, injuryText, injuryStatus, override }) {
+  const level = injuryLevel({ gpHistory, injuryText, injuryStatus, override });
+  if (!level) return null;
+  const head = level === "high" ? "Risque élevé" : "Risque modéré";
+  const parts = [historyPart(recentSeasons(gpHistory)), injuryText, override?.note].filter(Boolean);
+  return parts.length ? `${head} — ${parts.join(" · ")}` : head;
 }

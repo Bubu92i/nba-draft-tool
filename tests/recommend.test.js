@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bestLineup, canDraft, availabilityTier, recommend, explain } from "../site/lib/recommend.js";
+import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS } from "../site/lib/recommend.js";
 
 const P = (id, positions, value, extra = {}) => ({
   id, name: id, team: "XXX", positions, value, fpg: 0, expectedGames: 70, adp: 999,
@@ -51,7 +51,7 @@ test("disponibilité", () => {
 });
 test("explication", () => {
   const p = P("c1", ["C"], 1000, { fpg: 48.04, statsLine: "20 pts · 12 reb · 2,5 ctr" });
-  assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "48 pts/match · 20 pts · 12 reb · 2,5 ctr, comble ton poste C");
+  assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "48 pts fantasy/match — 20 pts · 12 reb · 2,5 ctr, comble ton poste C");
 });
 test("remaniement : un meneur pur comble le poste SG via un polyvalent", () => {
   const recs = recommend({
@@ -93,6 +93,39 @@ test("explication : ownSlot absent et joueur non éligible au poste", () => {
   const shifted = P("a", ["PF", "C"], 10, { name: "Cooper Flagg" });
   assert.equal(
     explain({ fillsSlot: "C", ownSlot: null, shiftedPlayer: shifted, lineupGain: 5 }, p),
-    "0 pts/match, complète ton cinq (Flagg passe C)",
+    "0 pts fantasy/match, complète ton cinq (Flagg passe C)",
   );
+});
+
+test("explication : sans statsLine, pas de séparateur orphelin", () => {
+  const p = P("c1", ["C"], 1000, { fpg: 52.2, statsLine: null });
+  assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "52,2 pts fantasy/match, comble ton poste C");
+});
+test("lineupView : poste titulaire vide, tous les autres joueurs au banc (bug 6/5)", () => {
+  const roster = [
+    P("pg", ["PG"], 900), P("sg", ["SG"], 800), P("sf", ["SF"], 700), P("pf", ["PF"], 600),
+    P("b1", ["PG"], 5), P("b2", ["SG"], 4), P("b3", ["SF"], 3), P("b4", ["PF"], 2), P("b5", ["PF"], 1), P("b6", ["SF"], 0),
+  ];
+  const v = lineupView(roster);
+  assert.deepEqual(v.emptySlots, ["C"]);
+  assert.equal(v.starters.length, 5);
+  assert.equal(v.starters.find((s) => s.slot === "C").player, null);
+  assert.equal(v.bench.length, 6);
+  assert.equal(v.starters.filter((s) => s.player).length + v.bench.length, roster.length);
+  assert.deepEqual(new Set(v.bench.map((p) => p.id)), new Set(["b1", "b2", "b3", "b4", "b5", "b6"]));
+});
+test("lineupView : cinq complet, banc = le reste ; équipe vide", () => {
+  const roster = [P("pg", ["PG"], 9), P("sg", ["SG"], 9), P("sf", ["SF"], 9), P("pf", ["PF"], 9), P("c", ["C"], 9), P("x", ["C"], 1)];
+  const v = lineupView(roster);
+  assert.deepEqual(v.emptySlots, []);
+  assert.deepEqual(v.bench.map((p) => p.id), ["x"]);
+  const empty = lineupView([]);
+  assert.deepEqual(empty.emptySlots, ["PG", "SG", "SF", "PF", "C"]);
+  assert.deepEqual(empty.bench, []);
+});
+
+test("libellés de disponibilité : vrais aussi quand c'est mon tour", () => {
+  assert.equal(TIER_LABELS.gone, "⏳ Pas dispo à ton prochain tour");
+  assert.equal(TIER_LABELS.coinflip, "⚖️ Peut-être encore là à ton prochain tour");
+  assert.equal(TIER_LABELS.wait, "✅ Sera sûrement encore là à ton prochain tour");
 });

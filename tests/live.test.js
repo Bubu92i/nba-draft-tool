@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal } from "../site/lib/live.js";
+import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal, timerUrgent, dataAge } from "../site/lib/live.js";
 import { slotForPick } from "../site/lib/draftOrder.js";
 import { MY_USER_ID } from "../site/lib/config.js";
 
@@ -198,4 +198,20 @@ test("0 match attendu : jamais recommandé mais listé dans les disponibles", ()
   assert.ok(v.recommendations.length > 0);
   assert.ok(v.recommendations.every((r) => r.player.id !== "z1"));
   assert.ok(v.topAvailable.some((p) => p.id === "z1"));
+});
+
+test("chrono : urgent entre 1 et 15 s inclus seulement", () => {
+  assert.equal(timerUrgent(16), false);
+  assert.equal(timerUrgent(15), true);
+  assert.equal(timerUrgent(1), true);
+  assert.equal(timerUrgent(0), false);
+  assert.equal(timerUrgent(null), false);
+});
+test("âge des données : « il y a N s », orange au-delà de 15 s", () => {
+  assert.deepEqual(dataAge(1000, 4400), { text: "il y a 3 s", stale: false });
+  assert.deepEqual(dataAge(1000, 1000), { text: "il y a 0 s", stale: false });
+  assert.deepEqual(dataAge(0, 15000), { text: "il y a 15 s", stale: false });
+  assert.deepEqual(dataAge(0, 16000), { text: "il y a 16 s", stale: true });
+  assert.deepEqual(dataAge(5000, 1000), { text: "il y a 0 s", stale: false });
+  assert.equal(dataAge(null, 1000), null);
 });

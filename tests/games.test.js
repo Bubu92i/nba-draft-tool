@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { expectedGames, injuryBadge } from "../site/lib/games.js";
+import { expectedGames, injuryBadge, injuryLevel } from "../site/lib/games.js";
 
 test("joueur durable", () => {
   const g = expectedGames({ gpHistory: [{season:2025,gp:80},{season:2024,gp:80},{season:2023,gp:80}], yearsExp: 8, injuryStatus: null, override: null });
@@ -22,6 +22,32 @@ test("DTD ×0.97 et saisons avant la carrière NBA ignorées", () => {
 });
 test("badge : seulement si saison < 55 matchs ou statut", () => {
   assert.equal(injuryBadge({ gpHistory: [{season:2025,gp:80},{season:2024,gp:78},{season:2023,gp:70}], injuryText: null, override: null }), null);
-  assert.equal(injuryBadge({ gpHistory: [{season:2025,gp:0},{season:2024,gp:73},{season:2023,gp:68}], injuryText: null, override: null }), "a joué 0, 73, 68 matchs sur 3 saisons");
-  assert.match(injuryBadge({ gpHistory: [], injuryText: "Out — genou (Surgery)", override: { games: 30, note: "retour incertain, ~janvier" } }), /^Out — genou \(Surgery\) · retour incertain/);
+  assert.equal(injuryBadge({ gpHistory: [{season:2025,gp:0},{season:2024,gp:73},{season:2023,gp:68}], injuryText: null, override: null }), "Risque élevé — 0 match l'an dernier (73, 68 avant)");
+  assert.match(injuryBadge({ gpHistory: [], injuryText: "Blessé — genou (Surgery)", injuryStatus: "Out", override: { games: 30, note: "retour incertain, ~janvier" } }), /^Risque élevé — Blessé — genou \(Surgery\) · retour incertain/);
+});
+
+const H = (...gps) => gps.map((gp, i) => ({ season: 2025 - i, gp }));
+test("badge : format du risque avec la dernière saison nommée", () => {
+  assert.equal(injuryBadge({ gpHistory: H(36, 67, 73), injuryText: null, override: null }), "Risque élevé — 36 matchs l'an dernier (67, 73 avant)");
+  assert.equal(injuryBadge({ gpHistory: H(62, 50, 61), injuryText: null, override: null }), "Risque modéré — 62 matchs l'an dernier (50, 61 avant)");
+  assert.equal(injuryBadge({ gpHistory: H(40), injuryText: null, override: null }), "Risque élevé — 40 matchs l'an dernier");
+  assert.equal(injuryBadge({ gpHistory: H(1, 70), injuryText: null, override: null }), "Risque élevé — 1 match l'an dernier (70 avant)");
+});
+test("badge : statut seul (joueur solide) = risque modéré ; Out = risque élevé", () => {
+  assert.equal(injuryBadge({ gpHistory: H(80, 78, 70), injuryText: "Incertain — orteil (Bruise)", injuryStatus: "DTD", override: null }), "Risque modéré — Incertain — orteil (Bruise)");
+  assert.equal(injuryBadge({ gpHistory: H(80, 78, 70), injuryText: "Blessé — pied", injuryStatus: "Out", override: null }), "Risque élevé — Blessé — pied");
+});
+test("badge : texte, puis note d'override en fin de badge", () => {
+  assert.equal(
+    injuryBadge({ gpHistory: H(0, 73, 68), injuryText: "Blessé — genou", injuryStatus: "Out", override: { games: 30, note: "retour ~janvier" } }),
+    "Risque élevé — 0 match l'an dernier (73, 68 avant) · Blessé — genou · retour ~janvier",
+  );
+});
+test("injuryLevel : élevé si Out ou dernière saison < 50, modéré sinon, null sans badge", () => {
+  assert.equal(injuryLevel({ gpHistory: H(80, 80, 80), injuryText: null, override: null }), null);
+  assert.equal(injuryLevel({ gpHistory: H(49, 80, 80), injuryText: null, override: null }), "high");
+  assert.equal(injuryLevel({ gpHistory: H(50, 80, 80), injuryText: null, override: null }), "moderate");
+  assert.equal(injuryLevel({ gpHistory: H(80), injuryText: "x", injuryStatus: "Out", override: null }), "high");
+  assert.equal(injuryLevel({ gpHistory: H(80), injuryText: "x", injuryStatus: "DTD", override: null }), "moderate");
+  assert.equal(injuryLevel({ gpHistory: [], injuryText: null, override: { games: 10, note: "n" } }), "moderate");
 });

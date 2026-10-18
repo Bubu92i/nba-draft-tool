@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { fantasyPointsPerGame } from "../site/lib/scoring.js";
 import { historicalPerGame, completePerGame } from "../site/lib/history.js";
-import { expectedGames, injuryBadge } from "../site/lib/games.js";
+import { expectedGames, injuryBadge, injuryLevel } from "../site/lib/games.js";
 import { replacementFpg, seasonValue } from "../site/lib/value.js";
 
 const LEAGUE_ID = "1411432283293900800";
@@ -18,7 +18,11 @@ const path = (p) => fileURLToPath(new URL(p, ROOT));
 const BODY_PARTS_FR = {
   Knee: "genou", Ankle: "cheville", Foot: "pied", Hamstring: "ischio", Back: "dos",
   Shoulder: "épaule", Hip: "hanche", Calf: "mollet", Achilles: "Achille", Wrist: "poignet",
+  Toe: "orteil", Groin: "aine", Illness: "maladie", Thigh: "cuisse", Elbow: "coude", Hand: "main",
+  Finger: "doigt", Concussion: "commotion", Quadriceps: "quadriceps", Rest: "repos", Personal: "raisons personnelles",
+  Heel: "talon", Pectoral: "pectoral", Undisclosed: "non précisé", "Lower Leg": "jambe",
 };
+const STATUS_FR = { Out: "Blessé", DTD: "Incertain" };
 
 async function fetchJson(endpoint) {
   const url = BASE + endpoint;
@@ -44,18 +48,18 @@ function mapInjuryStatus(raw) {
   return raw === "Out" || raw === "IR" ? "Out" : "DTD";
 }
 
-function injuryText(status, p) {
+export function injuryText(status, p) {
   if (!status) return null;
-  let text = p.injury_status;
+  let text = STATUS_FR[status];
   if (p.injury_body_part) text += ` — ${BODY_PARTS_FR[p.injury_body_part] ?? p.injury_body_part}`;
   if (p.injury_notes) text += ` (${p.injury_notes})`;
   return text;
 }
 
-function statsLine(pg) {
-  const parts = [`${fr1(pg.pts ?? 0)} pts`, `${fr1(pg.reb ?? 0)} reb`, `${fr1(pg.ast ?? 0)} pd`];
-  if ((pg.stl ?? 0) >= 1.3) parts.push(`${fr1(pg.stl)} int`);
-  if ((pg.blk ?? 0) >= 1.0) parts.push(`${fr1(pg.blk)} ctr`);
+export function statsLine(pg) {
+  const parts = [`${fr1(pg.pts ?? 0)} points`, `${fr1(pg.reb ?? 0)} rebonds`, `${fr1(pg.ast ?? 0)} passes`];
+  if ((pg.stl ?? 0) >= 1.3) parts.push(`${fr1(pg.stl)} interceptions`);
+  if ((pg.blk ?? 0) >= 1.0) parts.push(`${fr1(pg.blk)} contres`);
   return parts.join(" · ");
 }
 
@@ -114,7 +118,8 @@ export function buildSnapshot({ league, players, projections, stats, overrides, 
       adp,
       injury: { status, text },
       gpHistory,
-      injuryBadge: injuryBadge({ gpHistory, injuryText: text, override }),
+      injuryBadge: injuryBadge({ gpHistory, injuryText: text, injuryStatus: status, override }),
+      injuryLevel: injuryLevel({ gpHistory, injuryText: text, injuryStatus: status, override }),
       statsLine: source === "default" ? null : statsLine(perGame),
     });
   }
@@ -166,8 +171,8 @@ td.b { font-size: 9.5px; color: #8a1c1c; }
 tr { page-break-inside: avoid; }
 </style></head><body>
 <h1>Top 50 — draft And1 (secours)</h1>
-<p class="d">Généré le ${esc(date)} · classé par valeur sur la saison · pts/match = points fantasy par match</p>
-<table><thead><tr><th class="n">Rang</th><th>Nom</th><th>Postes</th><th>Équipe</th><th class="n">Pts/match</th><th class="n">Matchs att.</th><th>Blessure</th></tr></thead>
+<p class="d">Généré le ${esc(date)} · classé par valeur sur la saison · pts fantasy/match = points fantasy par match</p>
+<table><thead><tr><th class="n">Rang</th><th>Nom</th><th>Postes</th><th>Équipe</th><th class="n">Pts fantasy/match</th><th class="n">Matchs att.</th><th>Blessure</th></tr></thead>
 <tbody>
 ${body}
 </tbody></table>
