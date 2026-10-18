@@ -11,11 +11,12 @@ test("statsLine : mots complets, interceptions et contres seulement si significa
 });
 
 test("injuryText : statut en français, parties du corps traduites", () => {
-  assert.equal(injuryText("Out", { injury_status: "Out", injury_body_part: "Knee", injury_notes: "Surgery" }), "Blessé — genou (Surgery)");
-  assert.equal(injuryText("Out", { injury_status: "IR", injury_body_part: "Foot" }), "Blessé — pied");
-  assert.equal(injuryText("DTD", { injury_status: "DTD", injury_body_part: "Toe", injury_notes: "Bruise" }), "Incertain — orteil (Bruise)");
-  assert.equal(injuryText("DTD", { injury_status: "Questionable", injury_body_part: "Calf Strain Mystery" }), "Incertain — Calf Strain Mystery");
+  assert.equal(injuryText("Out", { injury_status: "Out", injury_body_part: "Knee", injury_notes: "Surgery" }), "Blessé (genou, Surgery)");
+  assert.equal(injuryText("Out", { injury_status: "IR", injury_body_part: "Foot" }), "Blessé (pied)");
+  assert.equal(injuryText("DTD", { injury_status: "DTD", injury_body_part: "Toe", injury_notes: "Bruise" }), "Incertain (orteil, Bruise)");
+  assert.equal(injuryText("DTD", { injury_status: "Questionable", injury_body_part: "Calf Strain Mystery" }), "Incertain (Calf Strain Mystery)");
   assert.equal(injuryText("DTD", { injury_status: "DTD" }), "Incertain");
+  assert.equal(injuryText("DTD", { injury_status: "DTD", injury_notes: "Soreness" }), "Incertain (Soreness)");
   assert.equal(injuryText(null, { injury_status: null }), null);
 });
 
@@ -25,7 +26,7 @@ test("injuryText : traductions fréquentes", () => {
     Concussion: "commotion", Quadriceps: "quadriceps", Rest: "repos", Personal: "raisons personnelles",
     Heel: "talon", Pectoral: "pectoral", Undisclosed: "non précisé", "Lower Leg": "jambe",
   };
-  for (const [en, fr] of Object.entries(cases)) assert.equal(injuryText("DTD", { injury_status: "DTD", injury_body_part: en }), `Incertain — ${fr}`, en);
+  for (const [en, fr] of Object.entries(cases)) assert.equal(injuryText("DTD", { injury_status: "DTD", injury_body_part: en }), `Incertain (${fr})`, en);
 });
 
 test("Top 50 : en-tête « Pts fantasy/match »", () => {

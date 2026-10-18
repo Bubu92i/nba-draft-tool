@@ -1,12 +1,12 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
 import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge } from "./lib/live.js";
-import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS } from "./lib/recommend.js";
+import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine } from "./lib/recommend.js";
 
 const params = new URLSearchParams(location.search);
 const API = (params.get("api") ?? DEFAULT_API).replace(/\/+$/, "");
 const DRAFT = params.get("draft") ?? DRAFT_ID;
 const TABS = ["draft", "team", "board"];
-const fmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+const fmt = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const fmt0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
 
 function h(tag, attrs = {}, ...kids) {
@@ -68,7 +68,7 @@ function renderStatus() {
   const age = dataAge(app.updatedAt, Date.now());
   const upd = age ? h("span", { class: age.stale ? "upd stale" : "upd" }, age.text) : null;
   const secs = v.status === "drafting" && app.draft ? secondsLeft(app.draft, Date.now()) : null;
-  const timer = secs != null ? h("span", { class: timerUrgent(secs) ? "timer urgent" : "timer" }, `⏱ ${secs} s`) : null;
+  const timer = secs != null ? h("span", { class: timerUrgent(secs, v.isMyTurn) ? "timer urgent" : "timer" }, `⏱ ${secs} s`) : null;
   const right = h("span", { class: "right" }, timer, upd);
   if (v.status === "pre_draft") {
     el.status.append(h("span", {}, "En attente du début de la draft"), right);
@@ -113,6 +113,7 @@ function recCard(r, i) {
     i === 0 ? h("div", { class: "best-banner" }, "👉 MEILLEUR CHOIX") : null,
     h("div", { class: "head" }, h("span", { class: "rank" }, i + 1), h("div", { class: "id" }, h("div", { class: "name" }, p.name), h("div", { class: "meta" }, posBadges(p.positions), p.team))),
     h("div", { class: "pts" }, `≈ ${fmt0.format(seasonPts(p))} pts fantasy sur la saison`, h("span", { class: "games" }, ` (≈ ${fmt0.format(p.expectedGames)} matchs)`)),
+    h("div", { class: "value" }, valueLine(p.value)),
     h("div", { class: "why" }, r.reason),
     badges.length ? h("div", { class: "badges" }, badges) : null,
   );
@@ -135,7 +136,7 @@ function renderDraft(v) {
   );
   el.panels.draft.replaceChildren(
     h("h2", {}, "Recommandations"),
-    h("p", { class: "caption" }, "Classés selon ce que chaque joueur ajoute à ton cinq de départ (points fantasy × matchs prévus, poste à combler), puis la profondeur de banc."),
+    h("p", { class: "caption" }, rankingCaption(app.snapshot.replacementFpg)),
     recs,
     h("h2", {}, `Meilleurs joueurs disponibles (${v.topAvailable.length})`),
     h(
@@ -164,8 +165,10 @@ function renderTeam(v) {
   const benchRows = Array.from({ length: Math.max(ROSTER_SIZE - STARTER_SLOTS.length, bench.length) }, (_, i) =>
     bench[i] ? playerSlot("BN", bench[i]) : emptySlot("BN"),
   );
+  const over = v.status === "complete" || (v.currentPickNo == null && v.status !== "pre_draft");
+  const notice = missingSlotsNotice({ emptySlots, picksLeft: v.picksLeft, over });
   el.panels.team.replaceChildren(
-    emptySlots.length ? h("div", { class: "alert" }, `Il te manque : ${emptySlots.join(" · ")}`) : null,
+    notice ? h("div", { class: notice.level === "alert" ? "alert" : "notice" }, notice.text) : null,
     h("h2", {}, "Cinq majeur"),
     h("div", { class: "lineup" }, starters.map((s) => (s.player ? playerSlot(s.slot, s.player) : emptySlot(s.slot)))),
     h("div", { class: "total" }, `Total attendu (cinq majeur) : ${fmt0.format(starterTotal)} pts sur la saison`),
@@ -246,9 +249,13 @@ async function fetchOnce() {
   return { draft, picks, traded, users };
 }
 
+function refreshStale() {
+  el.main.classList.toggle("stale", !el.net.hidden || !el.calc.hidden);
+}
+
 function setOffline(offline) {
   el.net.hidden = !offline;
-  el.main.classList.toggle("stale", offline);
+  refreshStale();
 }
 
 function onData({ draft, picks, traded, users }) {
@@ -268,12 +275,14 @@ function onData({ draft, picks, traded, users }) {
     app.viewKey = next.key;
   }
   el.calc.hidden = true;
+  refreshStale();
   renderStatus();
 }
 
 function onComputeError(err) {
   console.error("Erreur de calcul:", err);
   el.calc.hidden = false;
+  refreshStale();
 }
 
 function onError(err) {

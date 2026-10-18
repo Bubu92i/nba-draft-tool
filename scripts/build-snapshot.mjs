@@ -50,10 +50,8 @@ function mapInjuryStatus(raw) {
 
 export function injuryText(status, p) {
   if (!status) return null;
-  let text = STATUS_FR[status];
-  if (p.injury_body_part) text += ` — ${BODY_PARTS_FR[p.injury_body_part] ?? p.injury_body_part}`;
-  if (p.injury_notes) text += ` (${p.injury_notes})`;
-  return text;
+  const detail = [p.injury_body_part ? BODY_PARTS_FR[p.injury_body_part] ?? p.injury_body_part : null, p.injury_notes].filter(Boolean);
+  return detail.length ? `${STATUS_FR[status]} (${detail.join(", ")})` : STATUS_FR[status];
 }
 
 export function statsLine(pg) {

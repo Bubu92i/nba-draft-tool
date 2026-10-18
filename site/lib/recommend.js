@@ -48,6 +48,25 @@ export function lineupView(roster) {
   };
 }
 
+const frNum = (n, opts) => n.toLocaleString("fr-FR", opts);
+
+export function rankingCaption(replacementFpg) {
+  return `Classés selon les points fantasy au-dessus d'un remplaçant (≈ ${frNum(replacementFpg, { maximumFractionDigits: 0 })}/match) × matchs prévus, puis le poste à combler et la profondeur de banc.`;
+}
+
+export function valueLine(value) {
+  const rounded = Math.round(value);
+  if (rounded <= 0) return "pas mieux qu'un remplaçant";
+  return `+${frNum(rounded, { maximumFractionDigits: 0 })} pts de plus qu'un remplaçant`;
+}
+
+export function missingSlotsNotice({ emptySlots, picksLeft, over }) {
+  if (!emptySlots.length) return null;
+  const list = emptySlots.join(" · ");
+  if (over || picksLeft <= emptySlots.length) return { level: "alert", text: `Il te manque : ${list}` };
+  return { level: "info", text: `Postes à remplir : ${list}` };
+}
+
 export const TIER_LABELS = {
   gone: "⏳ Pas dispo à ton prochain tour",
   coinflip: "⚖️ Peut-être encore là à ton prochain tour",
@@ -79,7 +98,7 @@ export function availabilityTier(adp, currentPickNo, myNextPickNo) {
 }
 
 export function explain(rec, player) {
-  const fpg = player.fpg.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
+  const fpg = frNum(player.fpg, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const stats = player.statsLine ? ` — ${player.statsLine}` : "";
   const shortName = (p) => {
     const words = p.name.trim().split(/\s+/);

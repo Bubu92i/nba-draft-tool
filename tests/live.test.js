@@ -200,12 +200,22 @@ test("0 match attendu : jamais recommandé mais listé dans les disponibles", ()
   assert.ok(v.topAvailable.some((p) => p.id === "z1"));
 });
 
-test("chrono : urgent entre 1 et 15 s inclus seulement", () => {
-  assert.equal(timerUrgent(16), false);
-  assert.equal(timerUrgent(15), true);
-  assert.equal(timerUrgent(1), true);
-  assert.equal(timerUrgent(0), false);
-  assert.equal(timerUrgent(null), false);
+test("chrono : urgent entre 1 et 15 s inclus, et seulement à mon tour", () => {
+  assert.equal(timerUrgent(16, true), false);
+  assert.equal(timerUrgent(15, true), true);
+  assert.equal(timerUrgent(1, true), true);
+  assert.equal(timerUrgent(0, true), false);
+  assert.equal(timerUrgent(null, true), false);
+  assert.equal(timerUrgent(10, false), false);
+  assert.equal(timerUrgent(10), false);
+});
+test("deriveState expose picksLeft (picks qu'il me reste à faire)", () => {
+  const pre = deriveState({ snapshot, draft: { status: "pre_draft", draft_order: null, settings, slot_to_roster_id: identity }, picks: [], tradedPicks: [], users, now });
+  assert.equal(pre.picksLeft, 10);
+  const mid = deriveState({ snapshot, draft: { status: "drafting", draft_order: { [MY_USER_ID]: 7 }, settings, slot_to_roster_id: identity, last_picked: now }, picks: fakePicks(6), tradedPicks: [], users, now });
+  assert.equal(mid.picksLeft, 10);
+  const later = deriveState({ snapshot, draft: { status: "drafting", draft_order: { [MY_USER_ID]: 7 }, settings, slot_to_roster_id: identity, last_picked: now }, picks: fakePicks(7), tradedPicks: [], users, now });
+  assert.equal(later.picksLeft, 9);
 });
 test("âge des données : « il y a N s », orange au-delà de 15 s", () => {
   assert.deepEqual(dataAge(1000, 4400), { text: "il y a 3 s", stale: false });

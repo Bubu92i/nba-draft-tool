@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS } from "../site/lib/recommend.js";
+import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine } from "../site/lib/recommend.js";
 
 const P = (id, positions, value, extra = {}) => ({
   id, name: id, team: "XXX", positions, value, fpg: 0, expectedGames: 70, adp: 999,
@@ -51,7 +51,7 @@ test("disponibilité", () => {
 });
 test("explication", () => {
   const p = P("c1", ["C"], 1000, { fpg: 48.04, statsLine: "20 pts · 12 reb · 2,5 ctr" });
-  assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "48 pts fantasy/match — 20 pts · 12 reb · 2,5 ctr, comble ton poste C");
+  assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "48,0 pts fantasy/match — 20 pts · 12 reb · 2,5 ctr, comble ton poste C");
 });
 test("remaniement : un meneur pur comble le poste SG via un polyvalent", () => {
   const recs = recommend({
@@ -93,7 +93,7 @@ test("explication : ownSlot absent et joueur non éligible au poste", () => {
   const shifted = P("a", ["PF", "C"], 10, { name: "Cooper Flagg" });
   assert.equal(
     explain({ fillsSlot: "C", ownSlot: null, shiftedPlayer: shifted, lineupGain: 5 }, p),
-    "0 pts fantasy/match, complète ton cinq (Flagg passe C)",
+    "0,0 pts fantasy/match, complète ton cinq (Flagg passe C)",
   );
 });
 
@@ -128,4 +128,34 @@ test("libellés de disponibilité : vrais aussi quand c'est mon tour", () => {
   assert.equal(TIER_LABELS.gone, "⏳ Pas dispo à ton prochain tour");
   assert.equal(TIER_LABELS.coinflip, "⚖️ Peut-être encore là à ton prochain tour");
   assert.equal(TIER_LABELS.wait, "✅ Sera sûrement encore là à ton prochain tour");
+});
+
+test("légende : points au-dessus d'un remplaçant, arrondi, format français", () => {
+  assert.equal(
+    rankingCaption(28.4),
+    "Classés selon les points fantasy au-dessus d'un remplaçant (≈ 28/match) × matchs prévus, puis le poste à combler et la profondeur de banc.",
+  );
+  assert.match(rankingCaption(27.5), /\(≈ 28\/match\)/);
+});
+test("ligne de valeur : +N pts de plus qu'un remplaçant, ou pas mieux", () => {
+  assert.match(valueLine(2912.6), /^\+2[\s\u00a0\u202f]913 pts de plus qu'un remplaçant$/);
+  assert.equal(valueLine(42), "+42 pts de plus qu'un remplaçant");
+  assert.equal(valueLine(0), "pas mieux qu'un remplaçant");
+  assert.equal(valueLine(-80.2), "pas mieux qu'un remplaçant");
+  assert.equal(valueLine(0.3), "pas mieux qu'un remplaçant");
+});
+test("postes manquants : rouge seulement si draft finie ou plus assez de picks, sinon ligne grise", () => {
+  const alert = (t) => ({ level: "alert", text: t });
+  const info = (t) => ({ level: "info", text: t });
+  assert.equal(missingSlotsNotice({ emptySlots: [], picksLeft: 3, over: false }), null);
+  assert.equal(missingSlotsNotice({ emptySlots: [], picksLeft: 0, over: true }), null);
+  assert.deepEqual(missingSlotsNotice({ emptySlots: ["PG", "C"], picksLeft: 8, over: false }), info("Postes à remplir : PG · C"));
+  assert.deepEqual(missingSlotsNotice({ emptySlots: ["PG", "C"], picksLeft: 3, over: false }), info("Postes à remplir : PG · C"));
+  assert.deepEqual(missingSlotsNotice({ emptySlots: ["PG", "C"], picksLeft: 2, over: false }), alert("Il te manque : PG · C"));
+  assert.deepEqual(missingSlotsNotice({ emptySlots: ["C"], picksLeft: 0, over: false }), alert("Il te manque : C"));
+  assert.deepEqual(missingSlotsNotice({ emptySlots: ["C"], picksLeft: 9, over: true }), alert("Il te manque : C"));
+});
+test("explication : toujours une décimale", () => {
+  const p = P("c1", ["C"], 1000, { fpg: 52, statsLine: null });
+  assert.equal(explain({ fillsSlot: "C", lineupGain: 1 }, p), "52,0 pts fantasy/match, comble ton poste C");
 });

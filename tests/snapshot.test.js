@@ -43,6 +43,7 @@ test("niveaux de blessure cohérents avec le badge (A5)", { skip: missing && "sn
     if (p.injuryBadge) {
       assert.ok(p.injuryBadge.startsWith(p.injuryLevel === "high" ? "Risque élevé" : "Risque modéré"), p.name);
       assert.ok(!/\b(Out|DTD|IR)\b/.test(p.injuryBadge), p.name);
+      assert.ok(p.injuryBadge.split(" — ").length <= 2, `tirets doublés : ${p.injuryBadge}`);
     }
     if (p.injury.status === "Out") assert.equal(p.injuryLevel, "high", p.name);
   }
