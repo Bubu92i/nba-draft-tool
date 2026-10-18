@@ -195,7 +195,7 @@ function shortName(name) {
   const parts = name.split(" ");
   if (parts.length < 2) return name;
   let last = parts.slice(-1);
-  if (SUFFIX.has(parts.at(-1)) && parts.length > 2) last = parts.slice(-2);
+  if (SUFFIX.has(parts[parts.length - 1]) && parts.length > 2) last = parts.slice(-2);
   return `${parts[0][0]}. ${last.join(" ")}`;
 }
 
@@ -220,7 +220,7 @@ function renderBoard(v) {
         const body = cell.player
           ? [h("span", { class: "pk" }, pickLabel(v, cell.pickNo)), h("span", { class: "nm" }, shortName(cell.player.name))]
           : cell.isMine
-            ? [h("span", { class: "nm" }, `à toi #${cell.pickNo}`)]
+            ? [h("span", { class: "nm" }, `à toi ${pickLabel(v, cell.pickNo)} (#${cell.pickNo})`)]
             : [h("span", { class: "pk" }, pickLabel(v, cell.pickNo))];
         return h("td", { class: classes.join(" ") }, body);
       }),
