@@ -41,7 +41,7 @@ const fr1 = (n) => n.toFixed(1).replace(".", ",");
 
 function mapInjuryStatus(raw) {
   if (!raw) return null;
-  return raw === "Out" ? "Out" : "DTD";
+  return raw === "Out" || raw === "IR" ? "Out" : "DTD";
 }
 
 function injuryText(status, p) {
@@ -115,7 +115,7 @@ export function buildSnapshot({ league, players, projections, stats, overrides, 
       injury: { status, text },
       gpHistory,
       injuryBadge: injuryBadge({ gpHistory, injuryText: text, override }),
-      statsLine: statsLine(perGame),
+      statsLine: source === "default" ? null : statsLine(perGame),
     });
   }
 
@@ -124,14 +124,13 @@ export function buildSnapshot({ league, players, projections, stats, overrides, 
   for (const r of rows) outPlayers[r.id] = { ...r, value: seasonValue(r.fpg, r.expectedGames, replFpg) };
 
   const check = [...stats[2025]]
-    .filter((r) => r.stats?.gp > 0 && typeof r.stats.pts === "number")
+    .filter((r) => outPlayers[String(r.player_id)] && !/^TEAM_/.test(String(r.player_id)) && r.stats?.gp > 0 && typeof r.stats.pts === "number")
     .sort((a, b) => b.stats.pts - a.stats.pts)
     .slice(0, 10)
     .map((r) => {
-      const p = players[String(r.player_id)] ?? r.player ?? {};
       const totals = {};
       for (const k of Object.keys(scoring)) if (typeof r.stats[k] === "number") totals[k] = r.stats[k];
-      return { id: String(r.player_id), name: p.full_name || `${p.first_name} ${p.last_name}`, gp: r.stats.gp, totals };
+      return { id: String(r.player_id), name: outPlayers[String(r.player_id)].name, gp: r.stats.gp, totals };
     });
 
   return {
@@ -196,9 +195,13 @@ async function main() {
   const list = Object.values(snapshot.players);
   console.log(`${list.length} joueurs, replacementFpg ${snapshot.replacementFpg}, overrides ${Object.keys(overrides).length}`);
   const top150 = list.sort((a, b) => b.value - a.value).slice(0, 150);
-  console.log("Out dans le top 150 par valeur :");
+  console.log("Out/IR dans le top 150 par valeur :");
   top150.forEach((p, i) => {
     if (p.injury.status === "Out") console.log(`  #${i + 1} ${p.id} ${p.name} (${p.team}) value ${p.value} — ${p.injury.text}${overrides[p.id] ? " [override]" : ""}`);
+  });
+  console.log("Top 150 sans statut blessure, 0 match lors de la dernière saison (2025) :");
+  top150.forEach((p, i) => {
+    if (!p.injury.status && p.gpHistory[0]?.season === 2025 && p.gpHistory[0].gp === 0) console.log(`  #${i + 1} ${p.id} ${p.name} (${p.team}) value ${p.value}, eg ${p.expectedGames}${overrides[p.id] ? " [override]" : ""}`);
   });
 }
 

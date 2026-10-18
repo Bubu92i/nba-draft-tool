@@ -11,6 +11,7 @@ const perGameOf = (c) => Object.fromEntries(Object.entries(c.totals).map(([k, v]
 test("contrôle du barème sur la saison 2025 réelle", { skip: missing && "snapshot absent" }, () => {
   const s = loadSnapshot();
   assert.equal(s.check.length, 10);
+  for (const c of s.check) assert.ok(s.players[c.id], `${c.id} n'est pas un joueur du snapshot`);
   for (const c of s.check) {
     let manual = 0;
     for (const [k, w] of Object.entries(s.scoring)) manual += (c.totals[k] ?? 0) * w;
@@ -28,4 +29,9 @@ test("cohérence globale", { skip: missing && "snapshot absent" }, () => {
   assert.ok(top.slice(0, 20).every((p) => p.fpg > 35));
   assert.ok(top.slice(0, 150).every((p) => p.injury.status !== "Out" || p.injuryBadge));
   for (const p of top) assert.ok(Number.isFinite(p.value) && p.positions.length > 0);
+});
+
+test("statsLine absente pour les valeurs par défaut", { skip: missing && "snapshot absent" }, () => {
+  const s = loadSnapshot();
+  for (const p of Object.values(s.players)) assert.equal(p.statsLine === null, p.fpgSource === "default", p.name);
 });

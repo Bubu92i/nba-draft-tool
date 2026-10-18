@@ -2,6 +2,11 @@
   "1000": { "games": 20.2, "note": "retour incertain, ~février", "source": "https://sports.yahoo.com/articles/know-jimmy-butler-latest-return-183000470.html" },
   "2440": { "games": 17, "note": "retour incertain, ~février", "source": "https://www.si.com/nba/suns/onsi/insider-reveals-when-phoenix-suns-center-mark-williams-should-return-from-injury" },
   "2476": { "games": 15, "note": "retour incertain, ~mars", "source": "https://www.espn.com/nba/story/_/id/49715231/sources-blazers-sharpe-miss-6-months-meniscus-tear" },
-  "1583": { "games": 49.1, "note": "retour incertain, ~novembre", "source": "https://www.nba.com/news/jazz-jusuf-nurkic-foot-injury" },
-  "2159": { "games": 59.6, "note": "retour incertain, ~fin octobre", "source": "https://www.nba.com/news/grizzlies-center-isaiah-stewart-out-2-weeks-with-ankle-sprain" }
+  "1583": { "games": 49.1, "note": "4 semaines d'absence annoncées (orteil), retour ~4 novembre, ~8 matchs manqués", "source": "https://www.nba.com/news/jazz-jusuf-nurkic-foot-injury" },
+  "2159": { "games": 59.6, "note": "2 semaines d'absence annoncées (entorse cheville), retour ~23 octobre, ~2 matchs manqués", "source": "https://www.nba.com/news/grizzlies-center-isaiah-stewart-out-2-weeks-with-ankle-sprain" },
+  "2161": { "games": 66, "note": "revient d'une rupture du tendon d'Achille, saison 2025-26 manquée ; dit être à 100 % en présaison", "source": "https://www.espn.com/nba/story/_/id/50168604/tyrese-haliburton-indiana-pacers-return-injury" },
+  "1054": { "games": 55, "note": "revient d'une rupture du LCA (mars 2025), 19 mois d'arrêt ; sans restriction, 34 ans", "source": "https://www.nba.com/news/mavs-kyrie-irving-acl-recovery" },
+  "1444": { "games": 56, "note": "revient d'une rupture du tendon d'Achille (16 mois d'arrêt) ; 36 ans, minutes réduites annoncées", "source": "https://www.nba.com/news/damian-lillard-is-back-on-the-court-for-the-trail-blazers-with-something-to-prove" },
+  "1717": { "games": 60, "note": "revient d'une rupture du LCA, saison 2025-26 manquée ; déclaré apte pour le début de saison", "source": "https://sports.yahoo.com/articles/rockets-major-fred-vanvleet-injury-230834796.html" },
+  "1632": { "games": 0, "note": "sans équipe, inculpé dans l'affaire de paris sportifs fédérale", "source": "https://www.nbcnews.com/news/us-news/terry-rozier-must-forfeit-26-million-nba-salary-arbitrator-rules-rcna348383" }
 }
