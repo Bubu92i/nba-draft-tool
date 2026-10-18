@@ -1,6 +1,6 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
 import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge, preDraftText } from "./lib/live.js";
-import { pickLabel, pickShort } from "./lib/draftOrder.js";
+import { pickLabel } from "./lib/draftOrder.js";
 import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, comparisonLine } from "./lib/recommend.js";
 
 const params = new URLSearchParams(location.search);
@@ -209,7 +209,7 @@ function renderTeam(v) {
     h("h2", {}, "Cinq majeur"),
     h("div", { class: "lineup" }, starters.map((s) => (s.player ? playerSlot(s.slot, s.player) : emptySlot(s.slot)))),
     h("div", { class: "total" }, `Total attendu (cinq majeur) : ${fmt0.format(starterTotal)} pts sur la saison`),
-    v.fiveComparison ? h("div", { class: "compare" }, comparisonLine(v.fiveComparison)) : null,
+    v.fiveComparison ? h("div", { class: "compare" }, comparisonLine(v.fiveComparison, { complete: isOver(v) })) : null,
     h("h2", {}, `Banc (${bench.length})`),
     h("div", { class: "lineup" }, benchRows),
   );
@@ -249,7 +249,7 @@ function renderBoard(v) {
         const body = cell.player
           ? [h("span", { class: "pk" }, choix), h("span", { class: "nm" }, shortName(cell.player.name))]
           : cell.isMine
-            ? [h("span", { class: "nm" }, "à toi"), h("span", { class: "nm sub" }, pickShort(cell.pickNo, teams))]
+            ? [h("span", { class: "nm" }, "à toi"), h("span", { class: "nm sub" }, `#${cell.pickNo}`)]
             : [h("span", { class: "pk" }, choix)];
         return h("td", { class: classes.join(" "), title: pickLabel(cell.pickNo, teams) }, body);
       }),

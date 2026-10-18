@@ -153,9 +153,12 @@ export const TIGHT_GAP = 50;
 
 export function gapLine(recs) {
   if (recs.length < 2) return null;
-  const gap = Math.round(recs[0].score - recs[1].score);
-  if (gap < TIGHT_GAP) return `Choix serré avec le n°2 (écart ${frNum(gap, { maximumFractionDigits: 0 })} pts)`;
-  return `+${frNum(gap, { maximumFractionDigits: 0 })} pts d'apport de plus que le n°2`;
+  const [first, second] = recs;
+  if (Math.abs(first.score - second.score) < TIGHT_GAP) return "Choix serré avec le n°2";
+  const d = Math.round(first.player.value) - Math.round(second.player.value);
+  if (d > 0) return `+${frNum(d, { maximumFractionDigits: 0 })} pts de plus que le n°2 sur la saison`;
+  if (first.fillsSlot) return `Devant le n°2 car il comble ton poste ${first.fillsSlot}`;
+  return "Devant le n°2 car il apporte plus à ton cinq de départ";
 }
 
 export function signedPts(value) {
@@ -187,7 +190,8 @@ export function compareFives({ rosters, myRosterId, teams }) {
   };
 }
 
-export function comparisonLine({ mine, rank, teams, average }) {
+export function comparisonLine({ mine, rank, teams, average }, { complete }) {
   const n = (x) => frNum(Math.round(x), { maximumFractionDigits: 0 });
-  return `Ton cinq : ≈ ${n(mine)} pts fantasy — ${rank === 1 ? "1re" : `${rank}e`} sur ${teams} équipes (moyenne ≈ ${n(average)})`;
+  const line = `Ton cinq : ≈ ${n(mine)} pts fantasy — ${rank === 1 ? "1re" : `${rank}e`} sur ${teams} équipes (moyenne ≈ ${n(average)})`;
+  return complete ? line : `${line} (à ce stade de la draft)`;
 }

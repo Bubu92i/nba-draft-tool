@@ -160,17 +160,25 @@ test("explication : toujours une décimale", () => {
   assert.equal(explain({ fillsSlot: "C", lineupGain: 1 }, p), "52,0 pts fantasy/match, comble ton poste C");
 });
 
-test("B1 gapLine : écart avec le n°2, arrondi", () => {
-  const recs = [{ score: 1500.4 }, { score: 1380 }];
-  assert.equal(gapLine(recs), "+120 pts d'apport de plus que le n°2");
-  assert.equal(gapLine([{ score: 2450 }, { score: 1000 }]), "+1\u202f450 pts d'apport de plus que le n°2");
+const R = (score, value, fillsSlot = null) => ({ score, fillsSlot, player: { value } });
+test("B1 gapLine : écart de valeur saison avec le n°2 (cohérent avec les lignes « de plus qu'un remplaçant »)", () => {
+  assert.equal(gapLine([R(1500, 755), R(1100, 360)]), "+395 pts de plus que le n°2 sur la saison");
+  assert.equal(gapLine([R(3000, 2450.4), R(1500, 1000.2)]), "+1\u202f450 pts de plus que le n°2 sur la saison");
+  assert.equal(gapLine([R(1050, 600), R(1000, 599.6)]), "Devant le n°2 car il apporte plus à ton cinq de départ");
 });
-test("B1 gapLine : choix serré sous 50 pts, absent avec une seule carte", () => {
-  assert.equal(gapLine([{ score: 1000 }, { score: 960 }]), "Choix serré avec le n°2 (écart 40 pts)");
-  assert.equal(gapLine([{ score: 1000 }, { score: 1000 }]), "Choix serré avec le n°2 (écart 0 pts)");
-  assert.equal(gapLine([{ score: 1049.4 }, { score: 1000 }]), "Choix serré avec le n°2 (écart 49 pts)");
-  assert.equal(gapLine([{ score: 1050 }, { score: 1000 }]), "+50 pts d'apport de plus que le n°2");
-  assert.equal(gapLine([{ score: 1000 }]), null);
+test("B1 gapLine : choix serré si les scores sont à moins de 50 pts", () => {
+  assert.equal(gapLine([R(1000, 500), R(960, 100)]), "Choix serré avec le n°2");
+  assert.equal(gapLine([R(1000, 500), R(1000, 500)]), "Choix serré avec le n°2");
+  assert.equal(gapLine([R(1049.4, 500), R(1000, 100)]), "Choix serré avec le n°2");
+  assert.equal(gapLine([R(1050, 500), R(1000, 100)]), "+400 pts de plus que le n°2 sur la saison");
+});
+test("B1 gapLine : n°1 de valeur inférieure mais devant grâce au cinq de départ", () => {
+  assert.equal(gapLine([R(1500, 300, "C"), R(1000, 800)]), "Devant le n°2 car il comble ton poste C");
+  assert.equal(gapLine([R(1500, 300), R(1000, 800)]), "Devant le n°2 car il apporte plus à ton cinq de départ");
+  assert.equal(gapLine([R(1500, 800, "PG"), R(1000, 800)]), "Devant le n°2 car il comble ton poste PG");
+});
+test("B1 gapLine : absent avec moins de 2 recommandations", () => {
+  assert.equal(gapLine([R(1000, 500)]), null);
   assert.equal(gapLine([]), null);
 });
 test("B3 signedPts et cardMarker", () => {
@@ -208,7 +216,9 @@ test("B6 compareFives : égalité = même rang, équipe vide → rang dernier", 
   assert.equal(compareFives({ rosters: { 1: fiveOf(10), 2: [] }, myRosterId: 2, teams: 2 }).rank, 2);
   assert.equal(compareFives({ rosters: { 1: fiveOf(10) }, myRosterId: 2, teams: 2 }).mine, 0);
 });
-test("B6 comparisonLine : format, 1re / 2e", () => {
-  assert.equal(comparisonLine({ mine: 11121, rank: 3, teams: 12, average: 10400.4 }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400)");
-  assert.equal(comparisonLine({ mine: 500, rank: 1, teams: 12, average: 400 }), "Ton cinq : ≈ 500 pts fantasy — 1re sur 12 équipes (moyenne ≈ 400)");
+test("B6 comparisonLine : format, 1re / 2e, mention « à ce stade » tant que la draft n'est pas finie", () => {
+  const mid = { mine: 11121, rank: 3, teams: 12, average: 10400.4 };
+  assert.equal(comparisonLine(mid, { complete: true }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400)");
+  assert.equal(comparisonLine(mid, { complete: false }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400) (à ce stade de la draft)");
+  assert.equal(comparisonLine({ mine: 500, rank: 1, teams: 12, average: 400 }, { complete: true }), "Ton cinq : ≈ 500 pts fantasy — 1re sur 12 équipes (moyenne ≈ 400)");
 });
