@@ -48,3 +48,12 @@ test("explication", () => {
   const p = P("c1", ["C"], 1000, { fpg: 48.04, statsLine: "20 pts · 12 reb · 2,5 ctr" });
   assert.equal(explain({ fillsSlot: "C", lineupGain: 1000 }, p), "48 pts/match · 20 pts · 12 reb · 2,5 ctr, comble ton poste C");
 });
+test("remaniement : un meneur pur comble le poste SG via un polyvalent", () => {
+  const recs = recommend({
+    available: [P("pg", ["PG"], 300), P("sg", ["SG"], 10)],
+    roster: [P("a", ["PG", "SG"], 500)],
+    picksLeft: 1, currentPickNo: 100, myNextPickNo: null,
+  });
+  assert.equal(recs[0].player.id, "pg");
+  assert.equal(recs[0].fillsSlot, "SG");
+});

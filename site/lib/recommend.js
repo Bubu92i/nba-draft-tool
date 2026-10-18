@@ -78,7 +78,7 @@ export function recommend({ available, roster, picksLeft, currentPickNo, myNextP
       const next = bestLineup([...roster, player]);
       const lineupGain = next.total - base.total;
       const fillsSlot =
-        STARTER_SLOTS.find((s) => base.assignment[s] == null && next.assignment[s] === player.id) ?? null;
+        STARTER_SLOTS.find((s) => base.assignment[s] == null && next.assignment[s] != null) ?? null;
       const rec = {
         player,
         score: lineupGain + BENCH_WEIGHT * Math.max(player.value, 0),
