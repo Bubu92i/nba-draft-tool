@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deriveState, createPoller, fetchJson, pickSignature } from "../site/lib/live.js";
+import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal } from "../site/lib/live.js";
 import { slotForPick } from "../site/lib/draftOrder.js";
 import { MY_USER_ID } from "../site/lib/config.js";
 
@@ -168,4 +168,34 @@ test("pickSignature change quand un pick est corrigé à nombre de picks égal",
   const b = [{ pick_no: 1, player_id: "p1", roster_id: 1 }, { pick_no: 2, player_id: "p9", roster_id: 2 }];
   assert.notEqual(pickSignature(a), pickSignature(b));
   assert.equal(pickSignature(a), pickSignature(a.map((p) => ({ ...p, metadata: {} }))));
+});
+
+test("timeoutSignal : repli sans AbortSignal.timeout (vieux navigateurs)", async () => {
+  const original = AbortSignal.timeout;
+  AbortSignal.timeout = undefined;
+  try {
+    const signal = timeoutSignal(30);
+    assert.equal(signal.aborted, false);
+    await new Promise((resolve) => signal.addEventListener("abort", resolve));
+    assert.equal(signal.aborted, true);
+    const hang = (url, { signal: s }) => new Promise((_, reject) => s.addEventListener("abort", () => reject(new Error("abort"))));
+    await assert.rejects(fetchJson("http://x/y", { fetchFn: hang, timeoutMs: 30 }), /abort/);
+  } finally {
+    AbortSignal.timeout = original;
+  }
+});
+test("ordre connu via slot_to_roster_id quand la draft tourne, même sans draft_order", () => {
+  const draft = { status: "drafting", draft_order: null, settings, slot_to_roster_id: identity, last_picked: now - 18000 };
+  const v = deriveState({ snapshot, draft, picks: fakePicks(3), tradedPicks: [], users, now });
+  assert.equal(v.orderKnown, true); assert.equal(v.mySlot, 7);
+  assert.equal(v.picksUntilMe, 3); assert.equal(v.myNextPickNo, 7);
+  assert.ok(v.board.flat().some((c) => c.isMine));
+});
+test("0 match attendu : jamais recommandé mais listé dans les disponibles", () => {
+  const zero = { ...snapshot.players.p1, id: "z1", name: "Zéro", expectedGames: 0, value: 99999, adp: 1 };
+  const snap = { ...snapshot, players: { ...snapshot.players, z1: zero } };
+  const v = deriveState({ snapshot: snap, draft: drafting, picks: fakePicks(3), tradedPicks: [], users, now });
+  assert.ok(v.recommendations.length > 0);
+  assert.ok(v.recommendations.every((r) => r.player.id !== "z1"));
+  assert.ok(v.topAvailable.some((p) => p.id === "z1"));
 });

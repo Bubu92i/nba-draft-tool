@@ -28,6 +28,13 @@ test("conforme à la draft 2025 réelle", () => {
   for (const p of picks) assert.equal(pickOwnerRosterId(p.pick_no, c), p.roster_id, `pick ${p.pick_no}`);
 });
 test("ordre inconnu", () => assert.equal(orderKnown({ draft_order: null }), false));
+test("ordre connu en cours de draft via slot_to_roster_id seul", () => {
+  const s2r = { 1: 1 };
+  assert.equal(orderKnown({ status: "drafting", draft_order: null, slot_to_roster_id: s2r }), true);
+  assert.equal(orderKnown({ status: "paused", draft_order: null, slot_to_roster_id: s2r }), true);
+  assert.equal(orderKnown({ status: "pre_draft", draft_order: null, slot_to_roster_id: s2r }), false);
+  assert.equal(orderKnown({ status: "drafting", draft_order: null, slot_to_roster_id: null }), false);
+});
 test("ordre connu", () => assert.equal(orderKnown({ draft_order: { u1: 1 } }), true));
 test("prochain pick à moi", () => {
   const mine = [7, 18, 30];

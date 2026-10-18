@@ -7,6 +7,11 @@ const P = (id, positions, value, extra = {}) => ({
   injury: { status: null, text: null }, injuryBadge: null, statsLine: "", ...extra,
 });
 
+test("recommend : exclut les joueurs à 0 match attendu", () => {
+  const available = [P("zero", ["PG"], 9999, { expectedGames: 0 }), P("ok", ["PG"], 10)];
+  const recs = recommend({ available, roster: [], picksLeft: 10, currentPickNo: 1, myNextPickNo: null });
+  assert.deepEqual(recs.map((r) => r.player.id), ["ok"]);
+});
 test("meilleur cinq avec multi-éligibilité", () => {
   const r = [P("a", ["PG", "SG"], 100), P("b", ["PG"], 90), P("c", ["C"], 50)];
   const L = bestLineup(r);
