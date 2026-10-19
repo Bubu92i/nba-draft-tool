@@ -1,6 +1,7 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
 import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge, preDraftText, withCacheBust } from "./lib/live.js";
 import { pickLabel } from "./lib/draftOrder.js";
+import { expertLine, expertDisagreement, noteBadge, expertSourcesLine } from "./lib/experts.js";
 import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, comparisonLine } from "./lib/recommend.js";
 
 const params = new URLSearchParams(location.search);
@@ -102,10 +103,34 @@ const injClass = (p) => `inj ${p.injuryLevel === "high" ? "high" : "moderate"}`;
 const injLine = (p) => (p.injuryBadge ? h("div", { class: injClass(p), title: p.injuryBadge }, `🩹 ${p.injuryBadge}`) : null);
 const isOver = (v) => v.status === "complete" || (v.currentPickNo == null && v.status !== "pre_draft");
 
+function noteLines(p, limit = Infinity) {
+  return (p.experts?.notes ?? []).slice(0, limit).map((n) => {
+    const { icon, text } = noteBadge(n);
+    return h("div", { class: "xnote", title: text }, `${icon} ${text}`);
+  });
+}
+
+function disagreementLine(p) {
+  const d = expertDisagreement(p);
+  return d ? h("div", { class: "xdis", title: d.text }, d.text) : null;
+}
+
+function expertDetails(p) {
+  return [disagreementLine(p), ...noteLines(p)];
+}
+
 function missingNotice(v) {
   const { emptySlots } = lineupView(v.myRoster);
   const notice = missingSlotsNotice({ emptySlots, picksLeft: v.picksLeft, over: isOver(v) });
   return notice ? h("div", { class: notice.level === "alert" ? "alert" : "notice" }, notice.text) : null;
+}
+
+function expertCardLines(p) {
+  const dis = expertDisagreement(p);
+  const line = dis ? dis.text : expertLine(p);
+  const [note] = noteLines(p, 1);
+  if (!line && !note) return null;
+  return h("div", { class: "xwrap" }, line ? h("div", { class: dis ? "xline xdis" : "xline", title: line }, line) : null, note);
 }
 
 function recCard(r, i, all) {
@@ -123,6 +148,7 @@ function recCard(r, i, all) {
     h("div", { class: "value" }, valueLine(p.value)),
     gap ? h("div", { class: "gap" }, gap) : null,
     h("div", { class: "why" }, r.reason),
+    expertCardLines(p),
     badges.length ? h("div", { class: "badges" }, badges) : null,
   );
 }
@@ -138,14 +164,16 @@ function renderDraft(v) {
       "tr",
       { class: card != null ? "in-recs" : null },
       h("td", { class: "n" }, i + 1),
-      h("td", {}, card != null ? h("span", { class: "marker", title: `Recommandation n°${card + 1}` }, cardMarker(card)) : null, h("b", {}, p.name), injLine(p)),
+      h("td", {}, card != null ? h("span", { class: "marker", title: `Recommandation n°${card + 1}` }, cardMarker(card)) : null, h("b", {}, p.name), injLine(p), expertDetails(p)),
       h("td", { class: "pos-cell" }, posBadges(p.positions)),
       h("td", {}, p.team),
       h("td", { class: "n" }, fmt.format(p.fpg)),
       h("td", { class: "n" }, fmt0.format(p.expectedGames)),
       h("td", { class: "n" }, signedPts(p.value)),
+      h("td", { class: "n" }, p.experts?.avgRank ?? "—"),
     );
   });
+  const sourcesLine = expertSourcesLine(app.snapshot.expertSources);
   el.panels.draft.replaceChildren(
     h("div", { class: "recs-head" }, h("h2", {}, "Recommandations"), missingNotice(v)),
     h("p", { class: "caption" }, rankingCaption(app.snapshot.replacementFpg)),
@@ -171,11 +199,13 @@ function renderDraft(v) {
             h("th", { class: "n" }, "Pts fantasy/match"),
             h("th", { class: "n" }, "Matchs prévus"),
             h("th", { class: "n" }, "+ vs remplaçant"),
+            h("th", { class: "n" }, "Experts"),
           ),
         ),
         h("tbody", {}, rows),
       ),
     ),
+    sourcesLine ? h("p", { class: "caption expert-sources" }, sourcesLine) : null,
   );
 }
 
@@ -184,7 +214,7 @@ function playerSlot(label, p) {
     "div",
     { class: "slot" },
     h("span", { class: "lbl" }, label),
-    h("span", { class: "who" }, p.name, h("div", { class: "sub" }, `${p.positions.join("/")} · ${p.team}`), injLine(p)),
+    h("span", { class: "who" }, p.name, h("div", { class: "sub" }, `${p.positions.join("/")} · ${p.team}`), injLine(p), expertDetails(p)),
     h("span", { class: "pts" }, `${fmt0.format(seasonPts(p))} pts`),
   );
 }
