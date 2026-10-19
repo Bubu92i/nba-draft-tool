@@ -28,7 +28,7 @@ test("expertDisagreement : null sans experts, sans toolRank ou hors top 150 expe
 });
 
 test("expertDisagreement : optimistes quand l'outil classe plus bas (seuil max(20, 0,5×avg))", () => {
-  assert.deepEqual(expertDisagreement(P(10, {}, 30)), { kind: "optimistes", text: "⚠️ Experts plus optimistes : 10e chez eux, 30e ici" });
+  assert.deepEqual(expertDisagreement(P(10, {}, 30)), { kind: "optimistes", text: "⚠️ Experts plus optimistes : 10e chez eux, 30e dans l'outil (classement général)" });
   assert.equal(expertDisagreement(P(10, {}, 29)), null);
   assert.equal(expertDisagreement(P(60, {}, 89)), null);
   assert.equal(expertDisagreement(P(60, {}, 90))?.kind, "optimistes");
@@ -37,26 +37,26 @@ test("expertDisagreement : optimistes quand l'outil classe plus bas (seuil max(2
 });
 
 test("expertDisagreement : « hors top 200 » au-delà de 200", () => {
-  assert.equal(expertDisagreement(P(90, {}, 200)).text, "⚠️ Experts plus optimistes : 90e chez eux, 200e ici");
-  assert.equal(expertDisagreement(P(90, {}, 201)).text, "⚠️ Experts plus optimistes : 90e chez eux, hors top 200 ici");
+  assert.equal(expertDisagreement(P(90, {}, 200)).text, "⚠️ Experts plus optimistes : 90e chez eux, 200e dans l'outil (classement général)");
+  assert.equal(expertDisagreement(P(90, {}, 201)).text, "⚠️ Experts plus optimistes : 90e chez eux, hors top 200 dans l'outil (classement général)");
 });
 
 test("expertDisagreement : prudents quand l'outil classe plus haut (seuil max(20, 0,5×toolRank))", () => {
-  assert.deepEqual(expertDisagreement(P(60, {}, 20)), { kind: "prudents", text: "⚠️ Experts plus prudents : 60e chez eux, 20e ici" });
+  assert.deepEqual(expertDisagreement(P(60, {}, 20)), { kind: "prudents", text: "⚠️ Experts plus prudents : 60e chez eux, 20e dans l'outil (classement général)" });
   assert.equal(expertDisagreement(P(39, {}, 20)), null);
   assert.equal(expertDisagreement(P(89, {}, 60)), null);
   assert.equal(expertDisagreement(P(90, {}, 60))?.kind, "prudents");
 });
 
 test("expertDisagreement : rang 1 en ordinal", () => {
-  assert.equal(expertDisagreement(P(40, {}, 1)).text, "⚠️ Experts plus prudents : 40e chez eux, 1er ici");
+  assert.equal(expertDisagreement(P(40, {}, 1)).text, "⚠️ Experts plus prudents : 40e chez eux, 1er dans l'outil (classement général)");
 });
 
 test("noteBadge : icône par étiquette", () => {
   assert.deepEqual(noteBadge({ tag: "sleeper", text: "a" }), { icon: "💎", text: "a" });
   assert.deepEqual(noteBadge({ tag: "bust", text: "b" }), { icon: "📉", text: "b" });
   assert.deepEqual(noteBadge({ tag: "role", text: "c" }), { icon: "🔄", text: "c" });
-  assert.deepEqual(noteBadge({ tag: "injury", text: "d" }), { icon: "🩹", text: "d" });
+  assert.deepEqual(noteBadge({ tag: "injury", text: "d" }), { icon: "🏥", text: "d" });
 });
 
 test("expertSourcesLine : dates j/m, absente sans sources", () => {

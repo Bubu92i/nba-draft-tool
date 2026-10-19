@@ -1,5 +1,5 @@
 const SOURCES = [["espn", "ESPN"], ["yahoo", "Yahoo"], ["fp", "FantasyPros"]];
-const NOTE_ICONS = { sleeper: "💎", bust: "📉", role: "🔄", injury: "🩹" };
+const NOTE_ICONS = { sleeper: "💎", bust: "📉", role: "🔄", injury: "🏥" };
 const MAX_EXPERT_RANK = 150;
 const OUT_OF_TOP = 200;
 
@@ -19,10 +19,10 @@ export function expertDisagreement(player) {
   if (avg == null || typeof tool !== "number" || avg > MAX_EXPERT_RANK) return null;
   if (tool - avg >= Math.max(20, 0.5 * avg)) {
     const here = tool > OUT_OF_TOP ? "hors top 200" : ordinal(tool);
-    return { kind: "optimistes", text: `⚠️ Experts plus optimistes : ${ordinal(avg)} chez eux, ${here} ici` };
+    return { kind: "optimistes", text: `⚠️ Experts plus optimistes : ${ordinal(avg)} chez eux, ${here} dans l'outil (classement général)` };
   }
   if (avg - tool >= Math.max(20, 0.5 * tool)) {
-    return { kind: "prudents", text: `⚠️ Experts plus prudents : ${ordinal(avg)} chez eux, ${ordinal(tool)} ici` };
+    return { kind: "prudents", text: `⚠️ Experts plus prudents : ${ordinal(avg)} chez eux, ${ordinal(tool)} dans l'outil (classement général)` };
   }
   return null;
 }
