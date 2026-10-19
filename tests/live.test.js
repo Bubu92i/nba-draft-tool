@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal, timerUrgent, dataAge, formatStartTime, preDraftText } from "../site/lib/live.js";
-import { slotForPick } from "../site/lib/draftOrder.js";
+import { deriveState, createPoller, fetchJson, pickSignature, timeoutSignal, timerUrgent, dataAge, formatStartTime, preDraftText, withCacheBust } from "../site/lib/live.js";
+import { slotForPick, resolveMyRosterId, myPickNumbers } from "../site/lib/draftOrder.js";
 import { MY_USER_ID } from "../site/lib/config.js";
 
 const POS = [["PG"], ["SG"], ["SF"], ["PF"], ["C"], ["PG", "SG"], ["SF", "PF"], ["C", "PF"]];
@@ -250,4 +250,55 @@ test("B6 deriveState : fiveComparison (mon cinq vs les 12 équipes)", () => {
   assert.ok(v.fiveComparison.mine > 0);
   assert.ok(v.fiveComparison.rank >= 1 && v.fiveComparison.rank <= 12);
   assert.ok(v.fiveComparison.average > 0 && v.fiveComparison.average < v.fiveComparison.mine * 12);
+});
+
+test("F1 withCacheBust : ajoute ?_=now, ou &_=now si l'URL a déjà un ?", () => {
+  assert.equal(withCacheBust("https://api.sleeper.app/v1/draft/1", 123), "https://api.sleeper.app/v1/draft/1?_=123");
+  assert.equal(withCacheBust("https://x/y?a=1", 123), "https://x/y?a=1&_=123");
+  assert.equal(withCacheBust("data/snapshot.json", 5, "v"), "data/snapshot.json?v=5");
+});
+
+test("F2 resolveMyRosterId : draft_order + slot_to_roster_id, sinon repli", () => {
+  const mock = { draft_order: { [MY_USER_ID]: 8 }, slot_to_roster_id: identity };
+  assert.equal(resolveMyRosterId(mock, MY_USER_ID, 7), 8);
+  const real2025 = { draft_order: { [MY_USER_ID]: 2 }, slot_to_roster_id: { ...identity, 2: 7, 7: 2 } };
+  assert.equal(resolveMyRosterId(real2025, MY_USER_ID, 7), 7);
+  assert.equal(resolveMyRosterId({ draft_order: null, slot_to_roster_id: identity }, MY_USER_ID, 7), 7);
+  assert.equal(resolveMyRosterId({ draft_order: { autre: 3 }, slot_to_roster_id: identity }, MY_USER_ID, 7), 7);
+  assert.equal(resolveMyRosterId({ draft_order: { [MY_USER_ID]: 8 }, slot_to_roster_id: null }, MY_USER_ID, 7), 7);
+  assert.equal(resolveMyRosterId({ draft_order: { [MY_USER_ID]: 8 }, slot_to_roster_id: { 1: 1 } }, MY_USER_ID, 7), 7);
+});
+
+test("F2 deriveState : mock-like (user au slot 8) → mon roster 8, mes picks 8,17,29,44…, colonne 8 surlignée", () => {
+  const draft = { ...drafting, draft_order: { [MY_USER_ID]: 8 } };
+  const v = deriveState({ snapshot, draft, picks: fakePicks(7), tradedPicks: [], users, now });
+  assert.equal(v.mySlot, 8);
+  assert.equal(v.currentPickNo, 8); assert.equal(v.isMyTurn, true);
+  assert.equal(v.myNextPickNo, 17);
+  const ctx = { teams: 12, reversalRound: 3, slotToRosterId: identity, tradedPicks: [], season: "2026" };
+  const mine = myPickNumbers(8, ctx, 120);
+  assert.deepEqual(mine.slice(0, 4), [8, 17, 29, 44]);
+  assert.deepEqual(v.board.flat().filter((c) => c.isMine).map((c) => c.pickNo), mine);
+});
+
+test("F2 deriveState : 2025-like (user au slot 2, slot 2 → roster 7) → roster 7", () => {
+  const draft = { ...drafting, draft_order: { [MY_USER_ID]: 2 }, slot_to_roster_id: { ...identity, 2: 7, 7: 2 } };
+  const v = deriveState({ snapshot, draft, picks: [], tradedPicks: [], users, now });
+  assert.equal(v.mySlot, 2); assert.equal(v.myNextPickNo, 2);
+});
+
+test("F2 deriveState : draft_order null → repli sur le roster configuré (7)", () => {
+  const draft = { ...drafting, draft_order: null };
+  const v = deriveState({ snapshot: { ...snapshot, myRosterId: undefined }, draft, picks: [], tradedPicks: [], users, now });
+  assert.equal(v.mySlot, 7);
+});
+
+test("F3 deriveState : picks sans roster_id → propriétaire déduit du numéro de pick", () => {
+  const draft = { ...drafting, draft_order: { [MY_USER_ID]: 8 } };
+  const picks = fakePicks(8).map((p) => ({ ...p, roster_id: null }));
+  const v = deriveState({ snapshot, draft, picks, tradedPicks: [], users, now });
+  assert.equal(v.myRoster.length, 1);
+  assert.equal(v.myRoster[0].name, "Joueur 8");
+  assert.equal(v.board[0][7].isMine, true);
+  assert.equal(v.board[0][7].rosterId, 8);
 });

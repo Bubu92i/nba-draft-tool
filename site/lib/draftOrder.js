@@ -34,3 +34,9 @@ export function nextMyPick(myPicks, currentPickNo, includeCurrent) {
 export function pickLabel(pickNo, teams) {
   return `Tour ${Math.ceil(pickNo / teams)} · choix ${((pickNo - 1) % teams) + 1}`;
 }
+
+export function resolveMyRosterId(draft, myUserId, fallback) {
+  const slot = draft?.draft_order?.[myUserId];
+  const rosterId = slot == null ? undefined : draft.slot_to_roster_id?.[String(slot)];
+  return rosterId ?? fallback;
+}
