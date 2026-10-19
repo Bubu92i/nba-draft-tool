@@ -1,5 +1,5 @@
 import { DRAFT_ID, LEAGUE_ID, DEFAULT_API, POLL_MS, USERS_REFRESH_MS } from "./lib/config.js";
-import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge, preDraftText } from "./lib/live.js";
+import { deriveState, createPoller, secondsLeft, fetchJson, pickSignature, timerUrgent, dataAge, preDraftText, withCacheBust } from "./lib/live.js";
 import { pickLabel } from "./lib/draftOrder.js";
 import { lineupView, STARTER_SLOTS, ROSTER_SIZE, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, comparisonLine } from "./lib/recommend.js";
 
@@ -24,7 +24,7 @@ function h(tag, attrs = {}, ...kids) {
   return el;
 }
 
-const getJson = (path) => fetchJson(`${API}${path}`);
+const getJson = (path) => fetchJson(withCacheBust(`${API}${path}`, Date.now()));
 
 const app = {
   snapshot: null,
@@ -342,7 +342,7 @@ async function main() {
   for (const b of el.tabs) b.addEventListener("click", () => showTab(b.dataset.tab));
   showTab(app.tab);
   renderStatus();
-  app.snapshot = await fetchJson("data/snapshot.json");
+  app.snapshot = await fetchJson(withCacheBust("data/snapshot.json", Date.now(), "v"));
   el.foot.textContent = `Données du ${new Date(app.snapshot.generatedAt).toLocaleString("fr-FR")} · API ${API}`;
   setInterval(() => {
     if (app.view) renderStatus();
