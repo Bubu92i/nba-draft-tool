@@ -4,17 +4,18 @@ export const POSITION_CAP = 6;
 export const BENCH_WEIGHT = 0.3;
 export const COVERAGE_DECAY = [1, 0.5, 0.15];
 
-export function benchCoverage(candidate, roster) {
+export function benchCoverage(candidate, roster, starterIds = starterIdSet(bestLineup(roster))) {
   let best = null;
   for (const slot of STARTER_SLOTS) {
     if (!candidate.positions.includes(slot)) continue;
-    const eligible = roster.filter((p) => p.positions.includes(slot)).length;
-    const backupsAlready = Math.max(0, eligible - 1);
+    const backupsAlready = roster.filter((p) => !starterIds.has(p.id) && p.positions.includes(slot)).length;
     const factor = COVERAGE_DECAY[Math.min(backupsAlready, COVERAGE_DECAY.length - 1)];
     if (!best || factor > best.factor) best = { slot, factor, backupsAlready };
   }
   return best;
 }
+
+const starterIdSet = (lineup) => new Set(Object.values(lineup.assignment).filter((id) => id != null));
 
 export function bestLineup(players) {
   const memo = new Map();
@@ -64,7 +65,7 @@ export function lineupView(roster) {
 const frNum = (n, opts) => n.toLocaleString("fr-FR", opts);
 
 export function rankingCaption(replacementFpg) {
-  return `Classés selon les points fantasy au-dessus d'un remplaçant (≈ ${frNum(replacementFpg, { maximumFractionDigits: 0 })}/match) × matchs prévus, puis le poste à combler et la profondeur de banc.`;
+  return `Classés selon les points fantasy au-dessus d'un remplaçant (≈ ${frNum(replacementFpg, { maximumFractionDigits: 0 })}/match) × matchs prévus, puis le poste à combler et la couverture des postes sur le banc.`;
 }
 
 export function valueLine(value) {
@@ -139,6 +140,7 @@ export function explain(rec, player) {
 
 export function recommend({ available, roster, picksLeft, currentPickNo, myNextPickNo, limit = 4 }) {
   const base = bestLineup(roster);
+  const starterIds = starterIdSet(base);
   const emptySlots = STARTER_SLOTS.filter((s) => base.assignment[s] == null).length;
   let recs = available
     .filter((c) => c.expectedGames !== 0 && canDraft(c, roster))
@@ -151,7 +153,7 @@ export function recommend({ available, roster, picksLeft, currentPickNo, myNextP
       const occupantId = fillsSlot ? next.assignment[fillsSlot] : null;
       const shiftedPlayer =
         occupantId != null && occupantId !== player.id ? roster.find((p) => p.id === occupantId) ?? null : null;
-      const coverage = benchCoverage(player, roster);
+      const coverage = benchCoverage(player, roster, starterIds);
       const rec = {
         player,
         score: lineupGain + BENCH_WEIGHT * (coverage?.factor ?? 1) * Math.max(player.value, 0),
@@ -203,7 +205,9 @@ export const TIGHT_GAP = 50;
 export function gapLine(recs) {
   if (recs.length < 2) return null;
   const [first, second] = recs;
-  if (Math.abs(first.score - second.score) < TIGHT_GAP) return "Choix serré avec le n°2";
+  const benchOnly = first.lineupGain === 0 && second.lineupGain === 0;
+  const gap = benchOnly ? Math.abs(first.player.value - second.player.value) : Math.abs(first.score - second.score);
+  if (gap < TIGHT_GAP) return "Choix serré avec le n°2";
   const d = Math.round(first.player.value) - Math.round(second.player.value);
   if (d > 0) return `+${frNum(d, { maximumFractionDigits: 0 })} pts de plus que le n°2 sur la saison`;
   if (first.fillsSlot) return `Devant le n°2 car il comble ton poste ${first.fillsSlot}`;
