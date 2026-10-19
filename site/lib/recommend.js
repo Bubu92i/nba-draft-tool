@@ -2,6 +2,19 @@ export const STARTER_SLOTS = ["PG", "SG", "SF", "PF", "C"];
 export const ROSTER_SIZE = 10;
 export const POSITION_CAP = 6;
 export const BENCH_WEIGHT = 0.3;
+export const COVERAGE_DECAY = [1, 0.5, 0.15];
+
+export function benchCoverage(candidate, roster) {
+  let best = null;
+  for (const slot of STARTER_SLOTS) {
+    if (!candidate.positions.includes(slot)) continue;
+    const eligible = roster.filter((p) => p.positions.includes(slot)).length;
+    const backupsAlready = Math.max(0, eligible - 1);
+    const factor = COVERAGE_DECAY[Math.min(backupsAlready, COVERAGE_DECAY.length - 1)];
+    if (!best || factor > best.factor) best = { slot, factor, backupsAlready };
+  }
+  return best;
+}
 
 export function bestLineup(players) {
   const memo = new Map();
@@ -106,7 +119,14 @@ export function explain(rec, player) {
     return words[words.length - 1];
   };
   const ownSlot = rec.ownSlot === undefined && player.positions.includes(rec.fillsSlot) ? rec.fillsSlot : rec.ownSlot;
+  const cov = rec.coverage;
   let tail = ", profondeur de banc";
+  if (cov) {
+    tail =
+      cov.backupsAlready === 0 ? `, 1re doublure au poste ${cov.slot}`
+      : cov.backupsAlready === 1 ? `, 2e doublure au poste ${cov.slot}`
+      : `, ${cov.backupsAlready + 1}e doublure au poste ${cov.slot} (utilité limitée)`;
+  }
   if (rec.fillsSlot && ownSlot === rec.fillsSlot) tail = `, comble ton poste ${rec.fillsSlot}`;
   else if (rec.fillsSlot && rec.shiftedPlayer) {
     const name = shortName(rec.shiftedPlayer);
@@ -131,12 +151,14 @@ export function recommend({ available, roster, picksLeft, currentPickNo, myNextP
       const occupantId = fillsSlot ? next.assignment[fillsSlot] : null;
       const shiftedPlayer =
         occupantId != null && occupantId !== player.id ? roster.find((p) => p.id === occupantId) ?? null : null;
+      const coverage = benchCoverage(player, roster);
       const rec = {
         player,
-        score: lineupGain + BENCH_WEIGHT * Math.max(player.value, 0),
+        score: lineupGain + BENCH_WEIGHT * (coverage?.factor ?? 1) * Math.max(player.value, 0),
         lineupGain,
         fillsSlot,
         ownSlot,
+        coverage,
         shiftedPlayer,
         tier: availabilityTier(player.adp, currentPickNo, myNextPickNo),
       };
@@ -144,7 +166,34 @@ export function recommend({ available, roster, picksLeft, currentPickNo, myNextP
       return rec;
     });
   if (picksLeft <= emptySlots) recs = recs.filter((r) => r.fillsSlot);
-  return recs.sort((a, b) => b.score - a.score).slice(0, limit);
+  return diversify(recs.sort((a, b) => b.score - a.score), limit);
+}
+
+const MAX_PER_SLOT = 2;
+const slotKey = (r) => r.fillsSlot ?? r.ownSlot ?? r.coverage?.slot ?? null;
+
+function diversify(sorted, limit) {
+  const picked = [];
+  const skipped = [];
+  const pool = sorted.slice();
+  while (pool.length && picked.length < limit) {
+    const rec = pool.shift();
+    const key = slotKey(rec);
+    const saturated = picked.length > 0 && picked.filter((r) => slotKey(r) === key).length >= MAX_PER_SLOT;
+    if (saturated) {
+      const rival = pool.concat(skipped).filter((r) => slotKey(r) !== key).sort((a, b) => b.score - a.score)[0];
+      if (rival && rec.score <= 2 * rival.score) {
+        skipped.push(rec);
+        continue;
+      }
+    }
+    picked.push(rec);
+  }
+  for (const rec of skipped) {
+    if (picked.length >= limit) break;
+    picked.push(rec);
+  }
+  return picked;
 }
 
 export const seasonPts = (p) => Math.round(p.fpg * p.expectedGames);
@@ -158,6 +207,7 @@ export function gapLine(recs) {
   const d = Math.round(first.player.value) - Math.round(second.player.value);
   if (d > 0) return `+${frNum(d, { maximumFractionDigits: 0 })} pts de plus que le n°2 sur la saison`;
   if (first.fillsSlot) return `Devant le n°2 car il comble ton poste ${first.fillsSlot}`;
+  if (first.coverage && first.lineupGain <= 0) return "Devant le n°2 car il couvre mieux ton banc";
   return "Devant le n°2 car il apporte plus à ton cinq de départ";
 }
 

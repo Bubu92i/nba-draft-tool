@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bestLineup, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, compareFives, comparisonLine } from "../site/lib/recommend.js";
+import { bestLineup, benchCoverage, COVERAGE_DECAY, canDraft, availabilityTier, recommend, explain, lineupView, TIER_LABELS, missingSlotsNotice, rankingCaption, valueLine, gapLine, seasonPts, signedPts, cardMarker, compareFives, comparisonLine } from "../site/lib/recommend.js";
 
 const P = (id, positions, value, extra = {}) => ({
   id, name: id, team: "XXX", positions, value, fpg: 0, expectedGames: 70, adp: 999,
@@ -221,4 +221,80 @@ test("B6 comparisonLine : format, 1re / 2e, mention « à ce stade » tant que l
   assert.equal(comparisonLine(mid, { complete: true }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400)");
   assert.equal(comparisonLine(mid, { complete: false }), "Ton cinq : ≈ 11\u202f121 pts fantasy — 3e sur 12 équipes (moyenne ≈ 10\u202f400) (à ce stade de la draft)");
   assert.equal(comparisonLine({ mine: 500, rank: 1, teams: 12, average: 400 }, { complete: true }), "Ton cinq : ≈ 500 pts fantasy — 1re sur 12 équipes (moyenne ≈ 400)");
+});
+
+const roster92 = () => [
+  P("johnson", ["PF", "SF"], 3000), P("mitchell", ["PG", "SG"], 3000), P("murray", ["PG"], 2500),
+  P("duren", ["C"], 2500), P("clingan", ["C"], 2000), P("irving", ["PG", "SG"], 1500), P("buzelis", ["PF", "SF"], 1200),
+];
+test("benchCoverage : décroissance selon les doublures déjà présentes", () => {
+  assert.deepEqual(COVERAGE_DECAY, [1, 0.5, 0.15]);
+  const roster = roster92();
+  assert.deepEqual(benchCoverage(P("pg", ["PG"], 900), roster), { slot: "PG", factor: 0.15, backupsAlready: 2 });
+  assert.deepEqual(benchCoverage(P("c", ["C"], 600), roster), { slot: "C", factor: 0.5, backupsAlready: 1 });
+  assert.deepEqual(benchCoverage(P("pfsf", ["PF", "SF"], 500), roster), { slot: "SF", factor: 0.5, backupsAlready: 1 });
+  assert.deepEqual(benchCoverage(P("sg", ["SG"], 500), roster), { slot: "SG", factor: 0.5, backupsAlready: 1 });
+  assert.deepEqual(benchCoverage(P("pg", ["PG"], 900), []), { slot: "PG", factor: 1, backupsAlready: 0 });
+});
+test("benchCoverage : choisit le poste le moins couvert, égalité dans l'ordre des postes", () => {
+  const roster = roster92();
+  assert.deepEqual(benchCoverage(P("x", ["PG", "C"], 1), roster), { slot: "C", factor: 0.5, backupsAlready: 1 });
+  assert.deepEqual(benchCoverage(P("y", ["PG", "SG", "SF"], 1), roster), { slot: "SG", factor: 0.5, backupsAlready: 1 });
+});
+test("#92 : un pivot ou un ailier passe devant un 4e meneur, avec la doublure expliquée", () => {
+  const roster = roster92();
+  const available = [P("pg", ["PG"], 900), P("c", ["C"], 600), P("pf", ["PF"], 500)];
+  const recs = recommend({ available, roster, picksLeft: 3, currentPickNo: 92, myNextPickNo: null });
+  assert.notEqual(recs[0].player.id, "pg");
+  assert.equal(recs[0].player.id, "c");
+  assert.ok(recs[0].reason.endsWith(", 2e doublure au poste C"), recs[0].reason);
+  assert.deepEqual(recs[0].coverage, { slot: "C", factor: 0.5, backupsAlready: 1 });
+  assert.equal(recs.find((r) => r.player.id === "pg").score, 0.3 * 0.15 * 900);
+});
+test("explication : doublure au poste selon la couverture", () => {
+  const p = P("p", ["C"], 10);
+  const cov = (backupsAlready) => ({ slot: "C", factor: 1, backupsAlready });
+  assert.equal(explain({ lineupGain: 0, coverage: cov(0) }, p), "0,0 pts fantasy/match, 1re doublure au poste C");
+  assert.equal(explain({ lineupGain: 0, coverage: cov(1) }, p), "0,0 pts fantasy/match, 2e doublure au poste C");
+  assert.equal(explain({ lineupGain: 0, coverage: cov(2) }, p), "0,0 pts fantasy/match, 3e doublure au poste C (utilité limitée)");
+  assert.equal(explain({ lineupGain: 0, coverage: cov(3) }, p), "0,0 pts fantasy/match, 4e doublure au poste C (utilité limitée)");
+  assert.equal(explain({ lineupGain: 5, coverage: cov(0) }, p), "0,0 pts fantasy/match, renforce ton cinq");
+  assert.equal(explain({ fillsSlot: "C", lineupGain: 5, coverage: cov(0) }, p), "0,0 pts fantasy/match, comble ton poste C");
+});
+const fiveRoster = () => [
+  P("s1", ["PG"], 5000), P("s2", ["SG"], 5000), P("s3", ["SF"], 5000), P("s4", ["PF"], 5000), P("s5", ["C"], 5000),
+];
+test("diversité : au plus 2 cartes d'un même poste", () => {
+  const available = [
+    ...[900, 890, 880, 870, 860, 850].map((v, i) => P("pg" + i, ["PG"], v)),
+    P("c0", ["C"], 700), P("c1", ["C"], 690), P("sf0", ["SF"], 600),
+  ];
+  const recs = recommend({ available, roster: fiveRoster(), picksLeft: 5, currentPickNo: 60, myNextPickNo: null });
+  assert.equal(recs.length, 4);
+  assert.equal(recs[0].player.id, "pg0");
+  assert.equal(recs.filter((r) => r.coverage.slot === "PG").length, 2);
+  assert.deepEqual(recs.map((r) => r.player.id), ["pg0", "pg1", "c0", "c1"]);
+});
+test("diversité : un 3e meneur passe si son score dépasse 2× le meilleur autre poste", () => {
+  const available = [
+    P("pg0", ["PG"], 2000), P("pg1", ["PG"], 1900), P("pg2", ["PG"], 1800),
+    P("c0", ["C"], 700), P("c1", ["C"], 690), P("sf0", ["SF"], 600),
+  ];
+  const recs = recommend({ available, roster: fiveRoster(), picksLeft: 5, currentPickNo: 60, myNextPickNo: null });
+  assert.deepEqual(recs.map((r) => r.player.id), ["pg0", "pg1", "pg2", "c0"]);
+});
+test("diversité : les places vides sont complétées par les cartes sautées", () => {
+  const available = ["a", "b", "c", "d"].map((id, i) => P(id, ["PG"], 900 - i));
+  const recs = recommend({ available, roster: fiveRoster(), picksLeft: 5, currentPickNo: 60, myNextPickNo: null });
+  assert.deepEqual(recs.map((r) => r.player.id), ["a", "b", "c", "d"]);
+});
+test("diversité : la clé de poste est fillsSlot avant le poste de couverture", () => {
+  const roster = [P("pg", ["PG"], 900), P("sg", ["SG"], 800), P("sf", ["SF"], 700), P("pf", ["PF"], 700)];
+  const available = [P("c0", ["C"], 600), P("c1", ["C"], 590), P("c2", ["C"], 580), P("pg1", ["PG"], 1000)];
+  const recs = recommend({ available, roster, picksLeft: 6, currentPickNo: 60, myNextPickNo: null });
+  assert.deepEqual(recs.map((r) => r.player.id), ["c0", "c1", "pg1", "c2"]);
+});
+test("gapLine : n°1 choisi pour la couverture du banc, pas pour le cinq", () => {
+  const first = { ...R(90, 600), lineupGain: 0, coverage: { slot: "C", factor: 0.5, backupsAlready: 1 } };
+  assert.equal(gapLine([first, R(30, 900)]), "Devant le n°2 car il couvre mieux ton banc");
 });
