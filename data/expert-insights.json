@@ -1,0 +1,2205 @@
+{
+ "generatedAt": "2026-10-19T16:57:10Z",
+ "sources": [
+  {
+   "key": "espn",
+   "name": "ESPN – H2H Points league rankings 2026-27",
+   "url": "https://www.espn.com/fantasy/basketball/story/_/id/49960162/fantasy-basketball-points-league-rankings-2026-27-nba-season",
+   "date": "2026-10-09",
+   "format": "points",
+   "kind": "ranking"
+  },
+  {
+   "key": "yahoo",
+   "name": "Yahoo (Dan Titus) – Top 250 points league rankings, via NBA.com",
+   "url": "https://www.nba.com/news/nba-fantasy-top-250-points-league-rankings",
+   "date": "2026-09-29",
+   "format": "points",
+   "kind": "ranking"
+  },
+  {
+   "key": "fp",
+   "name": "FantasyPros – Consensus draft rankings, Points (ESPN scoring), 6 experts",
+   "url": "https://www.fantasypros.com/nba/rankings/overall-points-espn.php",
+   "date": "2026-10-18",
+   "format": "points",
+   "kind": "ranking"
+  },
+  {
+   "key": "notes_espn",
+   "name": "ESPN – Sleepers, breakouts and busts 2026-27",
+   "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27",
+   "date": "2026-09-22",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "yahoo_fade",
+   "name": "Yahoo Sports – All-Fade team (Dan Titus)",
+   "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html",
+   "date": "2026-10-05",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "nba_sleeper",
+   "name": "NBA.com/Yahoo – All-Sleeper team (Dan Titus)",
+   "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team",
+   "date": "2026-10-13",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "nba_breakout",
+   "name": "NBA.com/Yahoo – All-Breakout team (Dan Titus)",
+   "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team",
+   "date": "2026-10-12",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "rw_guard",
+   "name": "RotoWire via NBA.com – Guard preview, sleepers and breakouts",
+   "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts",
+   "date": "2026-10-06",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "rw_center",
+   "name": "RotoWire via NBA.com – Center preview, sleepers and breakouts",
+   "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts",
+   "date": "2026-10-09",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "rw_forward",
+   "name": "RotoWire – Forwards: breakouts, sleepers and fades",
+   "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363",
+   "date": "2026-10-07",
+   "format": "n/a",
+   "kind": "notes"
+  },
+  {
+   "key": "rw_hs",
+   "name": "RotoWire via NBA.com – Final top 150 High Score leagues",
+   "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues",
+   "date": "2026-10-16",
+   "format": "other",
+   "kind": "notes"
+  },
+  {
+   "key": "cbs",
+   "name": "CBS Sports/SportsLine – Sleepers, breakouts and busts",
+   "url": "https://www.cbssports.com/fantasy/basketball/news/fantasy-basketball-rankings-2026-27-sleepers-breakouts-and-busts-from-proven-nba-simulation",
+   "date": "2026-10-18",
+   "format": "n/a",
+   "kind": "notes"
+  }
+ ],
+ "players": {
+  "1658": {
+   "name": "Nikola Jokić",
+   "ranks": {
+    "espn": 1,
+    "yahoo": 1,
+    "fp": 1
+   },
+   "notes": []
+  },
+  "1970": {
+   "name": "Luka Dončić",
+   "ranks": {
+    "espn": 3,
+    "yahoo": 2,
+    "fp": 3
+   },
+   "notes": []
+  },
+  "1957": {
+   "name": "Shai Gilgeous-Alexander",
+   "ranks": {
+    "espn": 2,
+    "yahoo": 5,
+    "fp": 4
+   },
+   "notes": []
+  },
+  "2577": {
+   "name": "Victor Wembanyama",
+   "ranks": {
+    "espn": 4,
+    "yahoo": 3,
+    "fp": 2
+   },
+   "notes": []
+  },
+  "1380": {
+   "name": "Giannis Antetokounmpo",
+   "ranks": {
+    "espn": 5,
+    "yahoo": 4,
+    "fp": 5
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Nouveau club : Miami, énorme temps de jeu attendu",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2267": {
+   "name": "Cade Cunningham",
+   "ranks": {
+    "espn": 7,
+    "yahoo": 6,
+    "fp": 6
+   },
+   "notes": []
+  },
+  "2284": {
+   "name": "Jalen Johnson",
+   "ranks": {
+    "espn": 6,
+    "yahoo": 8,
+    "fp": 10
+   },
+   "notes": []
+  },
+  "2133": {
+   "name": "Anthony Edwards",
+   "ranks": {
+    "espn": 8,
+    "yahoo": 9,
+    "fp": 7
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "LaMelo Ball dirige l'attaque : moins de passes pour lui",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1822": {
+   "name": "Jayson Tatum",
+   "ranks": {
+    "espn": 9,
+    "yahoo": 7,
+    "fp": 53
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Premier choix offensif de Boston depuis le départ de Brown",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2126": {
+   "name": "Tyrese Maxey",
+   "ranks": {
+    "espn": 13,
+    "yahoo": 10,
+    "fp": 8
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Moins de touches attendues avec Brown et LeBron à Philadelphie",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2308": {
+   "name": "Alperen Şengün",
+   "ranks": {
+    "espn": 22,
+    "yahoo": 13,
+    "fp": 9
+   },
+   "notes": []
+  },
+  "1845": {
+   "name": "Donovan Mitchell",
+   "ranks": {
+    "espn": 10,
+    "yahoo": 14,
+    "fp": 11
+   },
+   "notes": []
+  },
+  "4760": {
+   "name": "Cooper Flagg",
+   "ranks": {
+    "espn": 11,
+    "yahoo": 12,
+    "fp": 15
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Mieux entouré (Kyrie Irving de retour) : 2e année prometteuse",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    },
+    {
+     "tag": "bust",
+     "text": "Modèle CBS : surcoté vers le rang 10, nouveau coach et Irving",
+     "source": "cbs",
+     "url": "https://www.cbssports.com/fantasy/basketball/news/fantasy-basketball-rankings-2026-27-sleepers-breakouts-and-busts-from-proven-nba-simulation"
+    }
+   ]
+  },
+  "2161": {
+   "name": "Tyrese Haliburton",
+   "ranks": {
+    "espn": 21,
+    "yahoo": 11,
+    "fp": 69
+   },
+   "notes": []
+  },
+  "1739": {
+   "name": "Domantas Sabonis",
+   "ranks": {
+    "espn": 12,
+    "yahoo": 40,
+    "fp": 26
+   },
+   "notes": []
+  },
+  "2458": {
+   "name": "Paolo Banchero",
+   "ranks": {
+    "espn": 46,
+    "yahoo": 16,
+    "fp": 12
+   },
+   "notes": []
+  },
+  "2289": {
+   "name": "Scottie Barnes",
+   "ranks": {
+    "espn": 17,
+    "yahoo": 17,
+    "fp": 13
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Kawhi Leonard (retour à Toronto) réduit un peu son usage",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1967": {
+   "name": "Jalen Brunson",
+   "ranks": {
+    "espn": 15,
+    "yahoo": 23,
+    "fp": 14
+   },
+   "notes": []
+  },
+  "2179": {
+   "name": "LaMelo Ball",
+   "ranks": {
+    "espn": 14,
+    "yahoo": 21,
+    "fp": 23
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Nouvelle équipe : Minnesota, où il dirige l'attaque",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1272": {
+   "name": "Anthony Davis",
+   "ranks": {
+    "espn": 29,
+    "yahoo": 15,
+    "fp": 16
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Doit partager les tirs à Washington (Young, Dybantsa) : trop cher",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    },
+    {
+     "tag": "injury",
+     "text": "Seulement 20 matchs l'an dernier avant son transfert",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1945": {
+   "name": "Trae Young",
+   "ranks": {
+    "espn": 16,
+    "yahoo": 22,
+    "fp": 25
+   },
+   "notes": []
+  },
+  "2313": {
+   "name": "Josh Giddey",
+   "ranks": {
+    "espn": 18,
+    "yahoo": 18,
+    "fp": 17
+   },
+   "notes": []
+  },
+  "1613": {
+   "name": "Karl-Anthony Towns",
+   "ranks": {
+    "espn": 24,
+    "yahoo": 27,
+    "fp": 18
+   },
+   "notes": []
+  },
+  "2574": {
+   "name": "Amen Thompson",
+   "ranks": {
+    "espn": 19,
+    "yahoo": 25,
+    "fp": 20
+   },
+   "notes": []
+  },
+  "1747": {
+   "name": "Jamal Murray",
+   "ranks": {
+    "espn": 28,
+    "yahoo": 19,
+    "fp": 21
+   },
+   "notes": []
+  },
+  "1433": {
+   "name": "Kevin Durant",
+   "ranks": {
+    "espn": 23,
+    "yahoo": 24,
+    "fp": 19
+   },
+   "notes": []
+  },
+  "1648": {
+   "name": "Devin Booker",
+   "ranks": {
+    "espn": 20,
+    "yahoo": 31,
+    "fp": 22
+   },
+   "notes": []
+  },
+  "1362": {
+   "name": "LeBron James",
+   "ranks": {
+    "espn": 42,
+    "yahoo": 20,
+    "fp": 28
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "4e ou 5e option à Philadelphie : stats loin de sa réputation",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1846": {
+   "name": "Bam Adebayo",
+   "ranks": {
+    "espn": 32,
+    "yahoo": 28,
+    "fp": 24
+   },
+   "notes": []
+  },
+  "1240": {
+   "name": "James Harden",
+   "ranks": {
+    "espn": 25,
+    "yahoo": 30,
+    "fp": 27
+   },
+   "notes": []
+  },
+  "1716": {
+   "name": "Pascal Siakam",
+   "ranks": {
+    "espn": 26,
+    "yahoo": 41,
+    "fp": 33
+   },
+   "notes": []
+  },
+  "2722": {
+   "name": "Stephon Castle",
+   "ranks": {
+    "espn": 53,
+    "yahoo": 26,
+    "fp": 49
+   },
+   "notes": []
+  },
+  "2438": {
+   "name": "Jalen Duren",
+   "ranks": {
+    "espn": 27,
+    "yahoo": 35,
+    "fp": 36
+   },
+   "notes": []
+  },
+  "1711": {
+   "name": "Jaylen Brown",
+   "ranks": {
+    "espn": 41,
+    "yahoo": 34,
+    "fp": 29
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Moins de touches à Philadelphie qu'à Boston",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1085": {
+   "name": "Stephen Curry",
+   "ranks": {
+    "espn": 37,
+    "yahoo": 29,
+    "fp": 30
+   },
+   "notes": []
+  },
+  "2181": {
+   "name": "Deni Avdija",
+   "ranks": {
+    "espn": 30,
+    "yahoo": 32,
+    "fp": 34
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Morant et Lillard menacent ses touches à Portland",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2316": {
+   "name": "Austin Reaves",
+   "ranks": {
+    "espn": 31,
+    "yahoo": 38,
+    "fp": 32
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Plus de ballons aux Lakers depuis le départ de LeBron",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2259": {
+   "name": "Evan Mobley",
+   "ranks": {
+    "espn": 35,
+    "yahoo": 36,
+    "fp": 31
+   },
+   "notes": []
+  },
+  "1308": {
+   "name": "Kawhi Leonard",
+   "ranks": {
+    "espn": 33,
+    "yahoo": 33,
+    "fp": 35
+   },
+   "notes": []
+  },
+  "2453": {
+   "name": "Jalen Williams",
+   "ranks": {
+    "espn": 34,
+    "yahoo": 49,
+    "fp": 38
+   },
+   "notes": []
+  },
+  "1830": {
+   "name": "Derrick White",
+   "ranks": {
+    "espn": 36,
+    "yahoo": 71,
+    "fp": 51
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Probable 2e option de Boston derrière Tatum (Brown parti)",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2285": {
+   "name": "Trey Murphy",
+   "ranks": {
+    "espn": 64,
+    "yahoo": 37,
+    "fp": 37
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Le retour de Dejounte Murray réduit un peu son usage",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2007": {
+   "name": "Darius Garland",
+   "ranks": {
+    "espn": 38,
+    "yahoo": 64,
+    "fp": 54
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Meneur principal des Clippers : plusieurs gros matchs attendus",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2455": {
+   "name": "Chet Holmgren",
+   "ranks": {
+    "espn": 71,
+    "yahoo": 51,
+    "fp": 39
+   },
+   "notes": []
+  },
+  "2143": {
+   "name": "Desmond Bane",
+   "ranks": {
+    "espn": 39,
+    "yahoo": 52,
+    "fp": 46
+   },
+   "notes": []
+  },
+  "2580": {
+   "name": "Keyonte George",
+   "ranks": {
+    "espn": 63,
+    "yahoo": 39,
+    "fp": 55
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Doit partager les ballons avec Peterson, Jackson et Markkanen",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1535": {
+   "name": "Julius Randle",
+   "ranks": {
+    "espn": 50,
+    "yahoo": 42,
+    "fp": 40
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Gros rôle aux Nets : ~24 pts, 10 reb, 5 passes attendus, prix trop bas",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "4740": {
+   "name": "Kon Knueppel",
+   "ranks": {
+    "espn": 40,
+    "yahoo": 79,
+    "fp": 89
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Commence la saison avec une blessure aux ischio-jambiers",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2054": {
+   "name": "Zion Williamson",
+   "ranks": {
+    "espn": 57,
+    "yahoo": 43,
+    "fp": 41
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Peu de rebonds et contres : surcoté pour son nom",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    },
+    {
+     "tag": "injury",
+     "text": "Santé fragile : 62 matchs l'an dernier, historique de blessures",
+     "source": "yahoo_fade",
+     "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html"
+    }
+   ]
+  },
+  "2568": {
+   "name": "Brandon Miller",
+   "ranks": {
+    "espn": 60,
+    "yahoo": 44,
+    "fp": 42
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Premier scoreur de Charlotte depuis le départ de LaMelo Ball",
+     "source": "nba_breakout",
+     "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team"
+    }
+   ]
+  },
+  "1872": {
+   "name": "De'Aaron Fox",
+   "ranks": {
+    "espn": 43,
+    "yahoo": 59,
+    "fp": 52
+   },
+   "notes": []
+  },
+  "2441": {
+   "name": "Walker Kessler",
+   "ranks": {
+    "espn": 69,
+    "yahoo": 58,
+    "fp": 43
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Pivot des Lakers avec Doncic : rebonds et contres en nombre",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    },
+    {
+     "tag": "injury",
+     "text": "Seulement 63 matchs sur 162 sur les deux dernières saisons",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1511": {
+   "name": "Joel Embiid",
+   "ranks": {
+    "espn": 72,
+    "yahoo": 47,
+    "fp": 44
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Seulement 57 matchs sur 164 sur les deux dernières saisons",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2036": {
+   "name": "Naz Reid",
+   "ranks": {
+    "espn": 44,
+    "yahoo": 72,
+    "fp": 71
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Titulaire à Charlotte : bien plus de valeur que son prix de draft",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    },
+    {
+     "tag": "role",
+     "text": "Remplace Miles Bridges comme ailier fort titulaire à Charlotte",
+     "source": "rw_forward",
+     "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363"
+    }
+   ]
+  },
+  "1924": {
+   "name": "Jaren Jackson",
+   "ranks": {
+    "espn": 84,
+    "yahoo": 54,
+    "fp": 45
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Nouveau à Utah : rotation encombrée, plafond limité",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1054": {
+   "name": "Kyrie Irving",
+   "ranks": {
+    "espn": 55,
+    "yahoo": 45,
+    "fp": 80
+   },
+   "notes": []
+  },
+  "1975": {
+   "name": "Mikal Bridges",
+   "ranks": {
+    "espn": 45,
+    "yahoo": 112,
+    "fp": 86
+   },
+   "notes": []
+  },
+  "2040": {
+   "name": "Ja Morant",
+   "ranks": {
+    "espn": 74,
+    "yahoo": 46,
+    "fp": 50
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Arrière-court encombré à Portland (Lillard, Holiday) : stats en baisse",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    },
+    {
+     "tag": "injury",
+     "text": "Seulement 79 matchs sur les 3 dernières saisons",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "2304": {
+   "name": "Franz Wagner",
+   "ranks": {
+    "espn": 58,
+    "yahoo": 57,
+    "fp": 47
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Deux saisons raccourcies par des blessures",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2055": {
+   "name": "Nickeil Alexander-Walker",
+   "ranks": {
+    "espn": 47,
+    "yahoo": 62,
+    "fp": 81
+   },
+   "notes": []
+  },
+  "1444": {
+   "name": "Damian Lillard",
+   "ranks": {
+    "espn": 61,
+    "yahoo": 48,
+    "fp": 103
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Revient après une année loin des terrains (tendon d'Achille)",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1752": {
+   "name": "Lauri Markkanen",
+   "ranks": {
+    "espn": 51,
+    "yahoo": 53,
+    "fp": 48
+   },
+   "notes": []
+  },
+  "1988": {
+   "name": "Michael Porter",
+   "ranks": {
+    "espn": 48,
+    "yahoo": 60,
+    "fp": 57
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Plus de concurrence pour les tirs à Brooklyn (Randle, rookie Brown)",
+     "source": "yahoo_fade",
+     "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html"
+    }
+   ]
+  },
+  "2449": {
+   "name": "Dyson Daniels",
+   "ranks": {
+    "espn": 49,
+    "yahoo": 67,
+    "fp": 59
+   },
+   "notes": []
+  },
+  "1713": {
+   "name": "Dejounte Murray",
+   "ranks": {
+    "espn": 52,
+    "yahoo": 50,
+    "fp": 56
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Minutes et usage encore flous à New Orleans",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1787": {
+   "name": "Jarrett Allen",
+   "ranks": {
+    "espn": 54,
+    "yahoo": 68,
+    "fp": 62
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Minutes en baisse à Cleveland : plafond limité",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2086": {
+   "name": "Tyler Herro",
+   "ranks": {
+    "espn": 56,
+    "yahoo": 55,
+    "fp": 58
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Premier vrai rôle de meneur principal, à Milwaukee",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2136": {
+   "name": "Onyeka Okongwu",
+   "ranks": {
+    "espn": 62,
+    "yahoo": 56,
+    "fp": 63
+   },
+   "notes": []
+  },
+  "2090": {
+   "name": "Ty Jerome",
+   "ranks": {
+    "espn": 59,
+    "yahoo": 100,
+    "fp": 106
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Efficace (~20 pts, 6 passes en 25 min), mais seulement 15 matchs",
+     "source": "nba_sleeper",
+     "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team"
+    }
+   ]
+  },
+  "1697": {
+   "name": "Ivica Zubac",
+   "ranks": {
+    "espn": 73,
+    "yahoo": 74,
+    "fp": 60
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Rebond possible à Indiana avec Haliburton pour le nourrir",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2728": {
+   "name": "Donovan Clingan",
+   "ranks": {
+    "espn": 68,
+    "yahoo": 63,
+    "fp": 61
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Pivot titulaire incontesté à Portland : double-double probable",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2835": {
+   "name": "Matas Buzelis",
+   "ranks": {
+    "espn": 79,
+    "yahoo": 61,
+    "fp": 68
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "A bien progressé : peut devenir le meilleur marqueur des Bulls",
+     "source": "nba_breakout",
+     "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team"
+    }
+   ]
+  },
+  "2733": {
+   "name": "Alex Sarr",
+   "ranks": {
+    "espn": 78,
+    "yahoo": 76,
+    "fp": 64
+   },
+   "notes": []
+  },
+  "1637": {
+   "name": "Norman Powell",
+   "ranks": {
+    "espn": 65,
+    "yahoo": 83,
+    "fp": 83
+   },
+   "notes": []
+  },
+  "2463": {
+   "name": "Ryan Rollins",
+   "ranks": {
+    "espn": 97,
+    "yahoo": 65,
+    "fp": 97
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rôle flou à Milwaukee, arrière-court déjà chargé",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2718": {
+   "name": "Zach Edey",
+   "ranks": {
+    "espn": 118,
+    "yahoo": 66,
+    "fp": 65
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Problèmes de cheville récurrents",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "4862": {
+   "name": "Caleb Wilson",
+   "ranks": {
+    "espn": 66,
+    "yahoo": 75,
+    "fp": 109
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Rookie titulaire aux Bulls, drafté tard : beaucoup de potentiel",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1998": {
+   "name": "Coby White",
+   "ranks": {
+    "espn": 83,
+    "yahoo": 82,
+    "fp": 66
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Meneur titulaire à Charlotte depuis le départ de LaMelo Ball",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    },
+    {
+     "tag": "injury",
+     "text": "Blessure au mollet : absent de la présaison",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "4873": {
+   "name": "Cameron Boozer",
+   "ranks": {
+    "espn": 67,
+    "yahoo": 70,
+    "fp": 105
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rookie à Memphis avec beaucoup de responsabilités et de ballons",
+     "source": "rw_forward",
+     "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363"
+    }
+   ]
+  },
+  "1350": {
+   "name": "Rudy Gobert",
+   "ranks": {
+    "espn": 70,
+    "yahoo": 89,
+    "fp": 67
+   },
+   "notes": []
+  },
+  "1698": {
+   "name": "Brandon Ingram",
+   "ranks": {
+    "espn": 110,
+    "yahoo": 69,
+    "fp": 75
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Déchirure partielle du tendon d'Achille, retour incertain",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2142": {
+   "name": "Payton Pritchard",
+   "ranks": {
+    "espn": 90,
+    "yahoo": 80,
+    "fp": 70
+   },
+   "notes": []
+  },
+  "1803": {
+   "name": "Josh Hart",
+   "ranks": {
+    "espn": 94,
+    "yahoo": 85,
+    "fp": 72
+   },
+   "notes": []
+  },
+  "2309": {
+   "name": "Jalen Green",
+   "ranks": {
+    "espn": 91,
+    "yahoo": 95,
+    "fp": 73
+   },
+   "notes": []
+  },
+  "2726": {
+   "name": "Kel'el Ware",
+   "ranks": {
+    "espn": 76,
+    "yahoo": 73,
+    "fp": 82
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Très productif par minute, mais son rôle derrière Turner est flou",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1913": {
+   "name": "Miles Bridges",
+   "ranks": {
+    "espn": 80,
+    "yahoo": 103,
+    "fp": 74
+   },
+   "notes": []
+  },
+  "2564": {
+   "name": "Brandin Podziemski",
+   "ranks": {
+    "espn": 75,
+    "yahoo": 124,
+    "fp": 100
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Plus de ballons à Golden State : prolongé 5 ans après un été calme",
+     "source": "nba_breakout",
+     "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team"
+    }
+   ]
+  },
+  "2001": {
+   "name": "RJ Barrett",
+   "ranks": {
+    "espn": 104,
+    "yahoo": 84,
+    "fp": 76
+   },
+   "notes": []
+  },
+  "2157": {
+   "name": "Immanuel Quickley",
+   "ranks": {
+    "espn": 92,
+    "yahoo": 86,
+    "fp": 77
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Son rôle change peu avec le retour de Kawhi Leonard à Toronto",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "4737": {
+   "name": "VJ Edgecombe",
+   "ranks": {
+    "espn": 77,
+    "yahoo": 77,
+    "fp": 91
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Moins de ballons à Philadelphie avec LeBron et Brown : prix trop haut",
+     "source": "yahoo_fade",
+     "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html"
+    }
+   ]
+  },
+  "1074": {
+   "name": "Paul George",
+   "ranks": {
+    "espn": 109,
+    "yahoo": 78,
+    "fp": 78
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Moins de 57 matchs dans 6 de ses 7 dernières saisons",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1831": {
+   "name": "OG Anunoby",
+   "ranks": {
+    "espn": 93,
+    "yahoo": 96,
+    "fp": 79
+   },
+   "notes": []
+  },
+  "4866": {
+   "name": "AJ Dybantsa",
+   "ranks": {
+    "espn": 81,
+    "yahoo": 99,
+    "fp": 129
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Choix n°1 de la draft : beaucoup de possessions à Washington",
+     "source": "rw_forward",
+     "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363"
+    }
+   ]
+  },
+  "2566": {
+   "name": "Ausar Thompson",
+   "ranks": {
+    "espn": 103,
+    "yahoo": 81,
+    "fp": 84
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "S'il passe de 26 à 30+ minutes, rebonds et steals en hausse",
+     "source": "nba_breakout",
+     "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team"
+    }
+   ]
+  },
+  "1450": {
+   "name": "CJ McCollum",
+   "ranks": {
+    "espn": 82,
+    "yahoo": 107,
+    "fp": 85
+   },
+   "notes": []
+  },
+  "4754": {
+   "name": "Dylan Harper",
+   "ranks": {
+    "espn": 85,
+    "yahoo": 93,
+    "fp": 104
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Peut gagner des minutes à San Antonio malgré un arrière-court chargé",
+     "source": "nba_breakout",
+     "url": "https://www.nba.com/news/nba-fantasy-all-breakout-team"
+    }
+   ]
+  },
+  "4751": {
+   "name": "Derik Queen",
+   "ranks": {
+    "espn": 86,
+    "yahoo": 102,
+    "fp": 107
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rôle et minutes incertains à New Orleans, malgré 81 matchs",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2275": {
+   "name": "Day'Ron Sharpe",
+   "ranks": {
+    "espn": 139,
+    "yahoo": 87,
+    "fp": 128
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Devient pivot titulaire à Brooklyn après le départ de Claxton",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    },
+    {
+     "tag": "injury",
+     "text": "Blessure au pouce à surveiller",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "1321": {
+   "name": "DeMar DeRozan",
+   "ranks": {
+    "espn": 87,
+    "yahoo": 121,
+    "fp": 94
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Devrait sortir du banc à Denver : volume de jeu en baisse",
+     "source": "yahoo_fade",
+     "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html"
+    }
+   ]
+  },
+  "1526": {
+   "name": "Zach LaVine",
+   "ranks": {
+    "espn": 130,
+    "yahoo": 101,
+    "fp": 87
+   },
+   "notes": []
+  },
+  "2135": {
+   "name": "Jaden McDaniels",
+   "ranks": {
+    "espn": 96,
+    "yahoo": 92,
+    "fp": 88
+   },
+   "notes": []
+  },
+  "2305": {
+   "name": "Jalen Suggs",
+   "ranks": {
+    "yahoo": 88,
+    "fp": 90
+   },
+   "notes": []
+  },
+  "2719": {
+   "name": "Reed Sheppard",
+   "ranks": {
+    "espn": 88,
+    "yahoo": 148,
+    "fp": 131
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Moins de minutes à Houston : Smart arrive, VanVleet revient",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1717": {
+   "name": "Fred VanVleet",
+   "ranks": {
+    "espn": 89,
+    "yahoo": 146,
+    "fp": 136
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rôle probablement plus petit qu'avant à Houston",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "4748": {
+   "name": "Cedric Coward",
+   "ranks": {
+    "espn": 120,
+    "yahoo": 90,
+    "fp": 127
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Titulaire probable à Memphis, peut monter vers 20 pts par match",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "4891": {
+   "name": "Darius Acuff",
+   "ranks": {
+    "espn": 95,
+    "yahoo": 91,
+    "fp": 122
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Rookie meneur des Kings : 30+ minutes attendues dès le début",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "1525": {
+   "name": "Andrew Wiggins",
+   "ranks": {
+    "espn": 105,
+    "yahoo": 97,
+    "fp": 92
+   },
+   "notes": []
+  },
+  "1934": {
+   "name": "Isaiah Hartenstein",
+   "ranks": {
+    "espn": 129,
+    "yahoo": 111,
+    "fp": 93
+   },
+   "notes": []
+  },
+  "2032": {
+   "name": "Nic Claxton",
+   "ranks": {
+    "espn": 112,
+    "yahoo": 94,
+    "fp": 96
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Chicago l'a pris pour être son pivot titulaire",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    },
+    {
+     "tag": "injury",
+     "text": "Blessure aux ischio-jambiers, attendu pour le premier match",
+     "source": "rw_center",
+     "url": "https://www.nba.com/news/nba-fantasy-center-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2456": {
+   "name": "Keegan Murray",
+   "ranks": {
+    "espn": 116,
+    "yahoo": 108,
+    "fp": 95
+   },
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Seulement 23 matchs l'an dernier ; plus de tirs disponibles",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2255": {
+   "name": "Ayo Dosunmu",
+   "ranks": {
+    "espn": 98,
+    "yahoo": 126,
+    "fp": 115
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Probablement remplaçant à Minnesota (LaMelo et Kuminga arrivés)",
+     "source": "rw_forward",
+     "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363"
+    }
+   ]
+  },
+  "1583": {
+   "name": "Jusuf Nurkić",
+   "ranks": {
+    "yahoo": 98,
+    "fp": 110
+   },
+   "notes": []
+  },
+  "1595": {
+   "name": "Myles Turner",
+   "ranks": {
+    "espn": 122,
+    "yahoo": 110,
+    "fp": 98
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Ware monte à Milwaukee : son rôle est incertain, prix trop haut",
+     "source": "yahoo_fade",
+     "url": "https://sports.yahoo.com/fantasy/article/fantasy-basketball-all-fade-team-6-players-to-avoid-ahead-of-the-nba-2026-27-season-150804972.html"
+    }
+   ]
+  },
+  "2445": {
+   "name": "Jabari Smith",
+   "ranks": {
+    "espn": 121,
+    "yahoo": 106,
+    "fp": 99
+   },
+   "notes": []
+  },
+  "1590": {
+   "name": "Kristaps Porziņģis",
+   "ranks": {
+    "espn": 99,
+    "yahoo": 142,
+    "fp": 118
+   },
+   "notes": []
+  },
+  "2009": {
+   "name": "Kevin Porter",
+   "ranks": {
+    "espn": 100,
+    "yahoo": 140,
+    "fp": 114
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Son rôle est flou depuis l'arrivée de Herro à Milwaukee",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1718": {
+   "name": "Jakob Poeltl",
+   "ranks": {
+    "espn": 113,
+    "yahoo": 113,
+    "fp": 101
+   },
+   "notes": [
+    {
+     "tag": "bust",
+     "text": "Trop cher en fantasy : Murray-Boyles va lui prendre des minutes",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1486": {
+   "name": "Nikola Vučević",
+   "ranks": {
+    "espn": 101,
+    "fp": 119
+   },
+   "notes": []
+  },
+  "2461": {
+   "name": "Andrew Nembhard",
+   "ranks": {
+    "espn": 124,
+    "yahoo": 104,
+    "fp": 102
+   },
+   "notes": []
+  },
+  "1809": {
+   "name": "John Collins",
+   "ranks": {
+    "espn": 102,
+    "yahoo": 117,
+    "fp": 108
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Plus de minutes et de touches à Detroit (Tobias Harris parti)",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2454": {
+   "name": "Peyton Watson",
+   "ranks": {
+    "espn": 117,
+    "yahoo": 105,
+    "fp": 146
+   },
+   "notes": []
+  },
+  "1487": {
+   "name": "Tobias Harris",
+   "ranks": {
+    "espn": 106,
+    "fp": 135
+   },
+   "notes": []
+  },
+  "4744": {
+   "name": "Egor Dëmin",
+   "ranks": {
+    "espn": 107,
+    "yahoo": 125,
+    "fp": 142
+   },
+   "notes": []
+  },
+  "4882": {
+   "name": "Darryn Peterson",
+   "ranks": {
+    "espn": 108,
+    "yahoo": 109,
+    "fp": 134
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rookie arrière à Utah : doit se battre pour des ballons",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "1585": {
+   "name": "Aaron Gordon",
+   "ranks": {
+    "espn": 136,
+    "yahoo": 132,
+    "fp": 111
+   },
+   "notes": []
+  },
+  "4750": {
+   "name": "Jeremiah Fears",
+   "ranks": {
+    "espn": 111
+   },
+   "notes": []
+  },
+  "2583": {
+   "name": "Jaime Jaquez",
+   "ranks": {
+    "espn": 114,
+    "yahoo": 130,
+    "fp": 112
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Arrivé à Milwaukee, peut devenir titulaire avec plus de minutes",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "2029": {
+   "name": "P.J. Washington",
+   "ranks": {
+    "yahoo": 134,
+    "fp": 113
+   },
+   "notes": []
+  },
+  "2301": {
+   "name": "Davion Mitchell",
+   "ranks": {
+    "espn": 150,
+    "yahoo": 114,
+    "fp": 139
+   },
+   "notes": []
+  },
+  "2422": {
+   "name": "Collin Gillespie",
+   "ranks": {
+    "espn": 115,
+    "yahoo": 127
+   },
+   "notes": []
+  },
+  "2020": {
+   "name": "Rui Hachimura",
+   "ranks": {
+    "yahoo": 115,
+    "fp": 138
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Titulaire des Clippers avec Ingram blessé : plus de tirs pour lui",
+     "source": "rw_forward",
+     "url": "https://www.rotowire.com/basketball/article/2026-27-fantasy-basketball-forwards-breakouts-sleepers-busts-139363"
+    }
+   ]
+  },
+  "1265": {
+   "name": "Jrue Holiday",
+   "ranks": {
+    "espn": 135,
+    "yahoo": 131,
+    "fp": 116
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Moins de jeu offensif à Portland derrière Morant et Lillard",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2302": {
+   "name": "Neemias Queta",
+   "ranks": {
+    "espn": 128,
+    "yahoo": 116,
+    "fp": 130
+   },
+   "notes": []
+  },
+  "1000": {
+   "name": "Jimmy Butler",
+   "ranks": {
+    "yahoo": 145,
+    "fp": 117
+   },
+   "notes": []
+  },
+  "4755": {
+   "name": "Collin Murray-Boyles",
+   "ranks": {
+    "yahoo": 118
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "2e année, défense polyvalente ; plus de minutes si Poeltl est blessé",
+     "source": "nba_sleeper",
+     "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team"
+    }
+   ]
+  },
+  "4761": {
+   "name": "Khaman Maluach",
+   "ranks": {
+    "yahoo": 119
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Titulaire probable à Phoenix : Mark Williams blessé à l'épaule",
+     "source": "nba_sleeper",
+     "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team"
+    },
+    {
+     "tag": "sleeper",
+     "text": "Pivot rookie : rebonds et contres, bon potentiel à bas prix",
+     "source": "nba_sleeper",
+     "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team"
+    }
+   ]
+  },
+  "2258": {
+   "name": "Quentin Grimes",
+   "ranks": {
+    "espn": 119,
+    "yahoo": 122,
+    "fp": 125
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Complet (points, 3 pts) et déjà à l'aise avec Doncic",
+     "source": "nba_sleeper",
+     "url": "https://www.nba.com/news/nba-fantasy-all-sleeper-team"
+    }
+   ]
+  },
+  "2714": {
+   "name": "Kyshawn George",
+   "ranks": {
+    "espn": 127,
+    "yahoo": 120,
+    "fp": 126
+   },
+   "notes": []
+  },
+  "2613": {
+   "name": "Toumani Camara",
+   "ranks": {
+    "fp": 120
+   },
+   "notes": []
+  },
+  "2435": {
+   "name": "Bennedict Mathurin",
+   "ranks": {
+    "yahoo": 129,
+    "fp": 121
+   },
+   "notes": []
+  },
+  "1892": {
+   "name": "Collin Sexton",
+   "ranks": {
+    "espn": 123
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Probable 6e homme des Lakers, marqueur par séries",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2146": {
+   "name": "Devin Vassell",
+   "ranks": {
+    "espn": 141,
+    "fp": 123
+   },
+   "notes": []
+  },
+  "2306": {
+   "name": "Jonathan Kuminga",
+   "ranks": {
+    "yahoo": 123,
+    "fp": 124
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Titulaire attendu à Minnesota",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2771": {
+   "name": "Oso Ighodaro",
+   "ranks": {
+    "espn": 125
+   },
+   "notes": []
+  },
+  "1997": {
+   "name": "Daniel Gafford",
+   "ranks": {
+    "espn": 126,
+    "yahoo": 138
+   },
+   "notes": []
+  },
+  "2145": {
+   "name": "Tre Jones",
+   "ranks": {
+    "yahoo": 128,
+    "fp": 148
+   },
+   "notes": []
+  },
+  "2590": {
+   "name": "Anthony Black",
+   "ranks": {
+    "espn": 131,
+    "yahoo": 147,
+    "fp": 144
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Meneur en progrès à Orlando : les experts attendent un bond",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1792": {
+   "name": "Dillon Brooks",
+   "ranks": {
+    "espn": 140,
+    "yahoo": 144,
+    "fp": 132
+   },
+   "notes": []
+  },
+  "2416": {
+   "name": "Scotty Pippen",
+   "ranks": {
+    "espn": 132
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Peut-être meneur titulaire à Memphis : upside en passes et steals",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "4758": {
+   "name": "Ace Bailey",
+   "ranks": {
+    "espn": 133,
+    "yahoo": 137,
+    "fp": 140
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "En 2e année, attendu comme premier marqueur d'un Jazz jeune",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  },
+  "1082": {
+   "name": "Draymond Green",
+   "ranks": {
+    "espn": 148,
+    "yahoo": 141,
+    "fp": 133
+   },
+   "notes": []
+  },
+  "4864": {
+   "name": "Yaxel Lendeborg",
+   "ranks": {
+    "yahoo": 133
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rookie : un poste de titulaire est ouvert à Golden State",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2494": {
+   "name": "Julian Champagnie",
+   "ranks": {
+    "espn": 134
+   },
+   "notes": []
+  },
+  "1883": {
+   "name": "Wendell Carter",
+   "ranks": {
+    "yahoo": 135,
+    "fp": 147
+   },
+   "notes": []
+  },
+  "2768": {
+   "name": "Pelle Larsson",
+   "ranks": {
+    "yahoo": 136
+   },
+   "notes": []
+  },
+  "1178": {
+   "name": "Brook Lopez",
+   "ranks": {
+    "espn": 137
+   },
+   "notes": []
+  },
+  "2091": {
+   "name": "Cameron Johnson",
+   "ranks": {
+    "fp": 137
+   },
+   "notes": []
+  },
+  "1779": {
+   "name": "Malik Monk",
+   "ranks": {
+    "espn": 138
+   },
+   "notes": []
+  },
+  "2131": {
+   "name": "Saddiq Bey",
+   "ranks": {
+    "espn": 144,
+    "yahoo": 139
+   },
+   "notes": []
+  },
+  "1512": {
+   "name": "Jerami Grant",
+   "ranks": {
+    "espn": 145,
+    "fp": 141
+   },
+   "notes": []
+  },
+  "1887": {
+   "name": "Mitchell Robinson",
+   "ranks": {
+    "espn": 142
+   },
+   "notes": []
+  },
+  "2772": {
+   "name": "Ajay Mitchell",
+   "ranks": {
+    "yahoo": 143
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Les départs à OKC (Wiggins, Joe, Dort) peuvent agrandir son rôle",
+     "source": "rw_guard",
+     "url": "https://www.nba.com/news/nba-fantasy-guard-preview-sleepers-and-breakouts"
+    }
+   ]
+  },
+  "2065": {
+   "name": "Keldon Johnson",
+   "ranks": {
+    "espn": 143
+   },
+   "notes": []
+  },
+  "2447": {
+   "name": "Tari Eason",
+   "ranks": {
+    "fp": 143
+   },
+   "notes": []
+  },
+  "1589": {
+   "name": "Bobby Portis",
+   "ranks": {
+    "fp": 145
+   },
+   "notes": []
+  },
+  "2586": {
+   "name": "Cason Wallace",
+   "ranks": {
+    "espn": 146,
+    "fp": 149
+   },
+   "notes": [
+    {
+     "tag": "sleeper",
+     "text": "Plus de minutes attendues à OKC, peut faire beaucoup de steals",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2444": {
+   "name": "Jake LaRavia",
+   "ranks": {
+    "espn": 147
+   },
+   "notes": []
+  },
+  "2286": {
+   "name": "Herbert Jones",
+   "ranks": {
+    "yahoo": 149
+   },
+   "notes": []
+  },
+  "2766": {
+   "name": "Kyle Filipowski",
+   "ranks": {
+    "espn": 149
+   },
+   "notes": []
+  },
+  "1974": {
+   "name": "Deandre Ayton",
+   "ranks": {
+    "fp": 150
+   },
+   "notes": []
+  },
+  "4871": {
+   "name": "Mikel Brown",
+   "ranks": {
+    "yahoo": 150
+   },
+   "notes": [
+    {
+     "tag": "role",
+     "text": "Rookie meneur titulaire à Brooklyn : passes attendues",
+     "source": "rw_hs",
+     "url": "https://www.nba.com/news/nba-fantasy-final-top-150-for-2026-27-high-score-leagues"
+    }
+   ]
+  },
+  "2584": {
+   "name": "Dereck Lively",
+   "ranks": {},
+   "notes": [
+    {
+     "tag": "injury",
+     "text": "Bon protecteur du cercle, mais seulement 98 matchs en 3 saisons",
+     "source": "notes_espn",
+     "url": "https://www.espn.com/fantasy/basketball/story/_/id/49999304/fantasy-basketball-sleepers-breakouts-busts-nba-2026-27"
+    }
+   ]
+  }
+ },
+ "unmatched": []
+}

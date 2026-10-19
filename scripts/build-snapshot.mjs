@@ -71,7 +71,38 @@ function byId(rows) {
   return map;
 }
 
-export function buildSnapshot({ league, players, projections, stats, overrides, now = new Date() }) {
+const SOURCE_LABELS = { espn: "ESPN", yahoo: "Yahoo", fp: "FantasyPros" };
+const MAX_NOTES = 2;
+
+function expertsOf(entry) {
+  const ranks = entry.ranks ?? {};
+  const values = Object.values(ranks).filter((n) => typeof n === "number");
+  return {
+    avgRank: values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : null,
+    ranks,
+    notes: (entry.notes ?? []).slice(0, MAX_NOTES).map(({ tag, text }) => ({ tag, text })),
+  };
+}
+
+function expertSourcesOf(insights) {
+  return (insights.sources ?? [])
+    .filter((s) => s.kind === "ranking")
+    .map((s) => ({ key: s.key, label: SOURCE_LABELS[s.key] ?? s.key, date: s.date }));
+}
+
+export function attachExperts(snapshot, insights = null) {
+  Object.values(snapshot.players)
+    .sort((a, b) => b.value - a.value)
+    .forEach((p, i) => {
+      p.toolRank = i + 1;
+    });
+  if (!insights) return snapshot;
+  for (const [id, entry] of Object.entries(insights.players ?? {})) if (snapshot.players[id]) snapshot.players[id].experts = expertsOf(entry);
+  snapshot.expertSources = expertSourcesOf(insights);
+  return snapshot;
+}
+
+export function buildSnapshot({ league, players, projections, stats, overrides, insights = null, now = new Date() }) {
   const scoring = league.scoring_settings;
   const projById = new Map();
   for (const row of projections) {
@@ -136,7 +167,7 @@ export function buildSnapshot({ league, players, projections, stats, overrides, 
       return { id: String(r.player_id), name: outPlayers[String(r.player_id)].name, gp: r.stats.gp, totals };
     });
 
-  return {
+  return attachExperts({
     generatedAt: now.toISOString(),
     leagueId: LEAGUE_ID,
     draftId: DRAFT_ID,
@@ -145,7 +176,7 @@ export function buildSnapshot({ league, players, projections, stats, overrides, 
     replacementFpg: replFpg,
     players: outPlayers,
     check,
-  };
+  }, insights);
 }
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -188,7 +219,10 @@ async function main() {
   const overridesPath = path("data/injury-overrides.json");
   const overrides = existsSync(overridesPath) ? JSON.parse(readFileSync(overridesPath, "utf8")) : {};
 
-  const snapshot = buildSnapshot({ league, players, projections, stats, overrides });
+  const insightsPath = path("data/expert-insights.json");
+  const insights = existsSync(insightsPath) ? JSON.parse(readFileSync(insightsPath, "utf8")) : null;
+
+  const snapshot = buildSnapshot({ league, players, projections, stats, overrides, insights });
   mkdirSync(path("site/data"), { recursive: true });
   writeFileSync(path("site/data/snapshot.json"), JSON.stringify(snapshot));
   writeFileSync(path("site/top50.html"), renderTop50(snapshot));
